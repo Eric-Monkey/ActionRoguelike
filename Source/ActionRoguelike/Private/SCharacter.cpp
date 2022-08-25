@@ -3,7 +3,9 @@
 
 #include "SCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 // Sets default values
 ASCharacter::ASCharacter()
 {
@@ -11,9 +13,13 @@ ASCharacter::ASCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
 	SpringArmComp->SetupAttachment(RootComponent);
+	SpringArmComp->bUsePawnControlRotation = true;
+
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
 }
 
 // Called when the game starts or when spawned
@@ -25,7 +31,17 @@ void ASCharacter::BeginPlay()
 
 void ASCharacter::MoveForward(float value)
 {
-	AddMovementInput(GetActorForwardVector(),value);
+	FRotator ControlRot=GetControlRotation();
+	ControlRot.Pitch = 0;
+	ControlRot.Roll = 0;
+	AddMovementInput(ControlRot.Vector(),value);
+}
+
+void ASCharacter::MoveRight(float value)
+{
+	FRotator ControlRot = GetControlRotation();
+	FVector RightVector = FRotationMatrix(ControlRot).GetScaledAxis(EAxis::Y);
+	AddMovementInput(RightVector, value);
 }
 
 // Called every frame
@@ -39,7 +55,11 @@ void ASCharacter::Tick(float DeltaTime)
 void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
 	PlayerInputComponent->BindAxis("MoveForward",this,&ASCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("Turn",this,&APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("MoveRight",this,&ASCharacter::MoveRight);
+
+	PlayerInputComponent->BindAxis("TurnUp",this,&APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("TurnRight",this,&APawn::AddControllerYawInput);
 }
 
