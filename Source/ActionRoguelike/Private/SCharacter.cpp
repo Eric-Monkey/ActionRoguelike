@@ -5,7 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Kismet/KismetMathLibrary.h"
+
 // Sets default values
 ASCharacter::ASCharacter()
 {
@@ -19,7 +19,7 @@ ASCharacter::ASCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
 	bUseControllerRotationYaw = false;
-	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 // Called when the game starts or when spawned
@@ -44,6 +44,15 @@ void ASCharacter::MoveRight(float value)
 	AddMovementInput(RightVector, value);
 }
 
+void ASCharacter::Attack() {
+	FVector HandLocation=GetMesh()->GetSocketLocation("Muzzle_01");
+	FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		//= ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	GetWorld()->SpawnActor<AActor>(ProjectileClass,SpawnTM,SpawnParams);
+}
+
 // Called every frame
 void ASCharacter::Tick(float DeltaTime)
 {
@@ -61,5 +70,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	PlayerInputComponent->BindAxis("TurnUp",this,&APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("TurnRight",this,&APawn::AddControllerYawInput);
+
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ASCharacter::Attack);
+	PlayerInputComponent->BindAction("Jump",IE_Pressed,this, &ASCharacter::Jump);
 }
 
