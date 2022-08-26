@@ -9,6 +9,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class USInteractComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
@@ -25,8 +26,12 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	UCameraComponent* CameraComp;
+
+
+	UPROPERTY(VisibleAnywhere)
+	USInteractComponent* InteractComp;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -35,6 +40,8 @@ protected:
 	void MoveRight(float value);
 
 	void Attack();
+
+	void PrimaryInteract();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
