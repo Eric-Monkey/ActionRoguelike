@@ -10,15 +10,31 @@
 class UCameraComponent;
 class USpringArmComponent;
 class USInteractComponent;
+class ASBaseProjectile;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 {
 	GENERATED_BODY()
-protected:
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<AActor> ProjectileClass;
 public:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> Projectile;
+	/*UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> BaseProjectile;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> TeleProjectile;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> GProjectile;*/
+	
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* AttackMontage;
+
+	bool IsAttack;
+
+	FTimerHandle AttackTimerHandle;
+
+	void SetIsAttack();
+	
 	// Sets default values for this character's properties
 	ASCharacter();
 
@@ -29,16 +45,27 @@ protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	UCameraComponent* CameraComp;
 
-
 	UPROPERTY(VisibleAnywhere)
 	USInteractComponent* InteractComp;
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	void MoveForward(float value);
 
 	void MoveRight(float value);
+	
+	void PlayAttackAnim();
 
+	void CreateProjectile(TSubclassOf<AActor> SpawnProjectile);
+
+	void UseBaseProjectile();
+
+	void UseTeleProjectile();
+
+	void UseGProjectile();
+
+	UFUNCTION(BlueprintCallable)
 	void Attack();
 
 	void PrimaryInteract();
@@ -49,4 +76,5 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	
 };

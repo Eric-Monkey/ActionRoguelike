@@ -4,6 +4,8 @@
 #include "RedBarrel.h"
 #include "Components/StaticMeshComponent.h"
 #include "PhysicsEngine/RadialForceComponent.h"
+#include "DrawDebugHelpers.h"
+
 
 // Sets default values
 ARedBarrel::ARedBarrel()
@@ -28,7 +30,18 @@ ARedBarrel::ARedBarrel()
 void ARedBarrel::BeginPlay()
 {
 	Super::BeginPlay();
+	StaticMeshComp->OnComponentHit.AddDynamic(this,&ARedBarrel::OnActorHit);
+}
+
+void ARedBarrel::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+	RadialForceComp->FireImpulse();
 	
+	UE_LOG(LogTemp,Log,TEXT("_________________________________Boom"));
+
+	UE_LOG(LogTemp, Warning, TEXT("OtherActor %s	Time:%f"), *GetNameSafe(OtherActor), GetWorld()->TimeSeconds);
+
+	FString Text = FString::Printf(TEXT("Hit at location:%s"),*Hit.ImpactPoint.ToString());
+	DrawDebugString(GetWorld(),Hit.ImpactPoint,Text,nullptr,FColor::Green,2,true,1);
 }
 
 // Called every frame

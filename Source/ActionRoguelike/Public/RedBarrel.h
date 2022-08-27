@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "RedBarrel.generated.h"
 
+
 class UStaticMeshComponent;
 class URadialForceComponent;
 
@@ -28,6 +29,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+	UFUNCTION()
+	void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 };

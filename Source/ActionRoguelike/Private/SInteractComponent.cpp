@@ -36,8 +36,7 @@ void USInteractComponent::PrimaryInteract() {
 			ISInterface::Execute_Interact(HitActor,MyPawn);
 		}
 	}
-	FColor col = IsHit ? FColor::Green:FColor::Red;
-	DrawDebugLine(GetWorld() ,Beg ,End, col,true , 2 ,0, 2);
+
 }
 
 // Called when the game starts
