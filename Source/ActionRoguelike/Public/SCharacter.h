@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Chaos/Array.h"
 #include "SCharacter.generated.h"
 
 
@@ -17,14 +18,16 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 {
 	GENERATED_BODY()
 public:
+	TSubclassOf<ASBaseProjectile> CurProjectile;
+
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AActor> Projectile;
-	/*UPROPERTY(EditAnywhere)
-	TSubclassOf<AActor> BaseProjectile;
+	TSubclassOf<ASBaseProjectile> BaseProjectile;
+
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AActor> TeleProjectile;
+	TSubclassOf<ASBaseProjectile> TeleProjectile;
+
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AActor> GProjectile;*/
+	TSubclassOf<ASBaseProjectile> GProjectile;
 	
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* AttackMontage;
@@ -57,7 +60,7 @@ protected:
 	
 	void PlayAttackAnim();
 
-	void CreateProjectile(TSubclassOf<AActor> SpawnProjectile);
+	void CreateProjectile(TSubclassOf<ASBaseProjectile> SpawnProjectile);
 
 	void UseBaseProjectile();
 

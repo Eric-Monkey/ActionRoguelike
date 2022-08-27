@@ -8,8 +8,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "LatentActions.h"
-#include "SBaseProjectile.h"
 #include "DrawDebugHelpers.h"
+#include "SBaseProjectile.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -60,7 +60,7 @@ void ASCharacter::PlayAttackAnim() {
 	}
 }
 
-void ASCharacter::CreateProjectile(TSubclassOf<AActor> SpawnProjectile)
+void ASCharacter::CreateProjectile(TSubclassOf<ASBaseProjectile> SpawnProjectile)
 {
 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 	
@@ -75,7 +75,7 @@ void ASCharacter::CreateProjectile(TSubclassOf<AActor> SpawnProjectile)
 
 	//设置扫描形状
 	FCollisionShape Shape;
-	Shape.SetSphere(20);
+	Shape.SetSphere(10);
 
 	//击中结果
 	FHitResult HitResult;
@@ -86,10 +86,10 @@ void ASCharacter::CreateProjectile(TSubclassOf<AActor> SpawnProjectile)
 	FVector End = CameraComp->GetComponentRotation().Vector() * 5000 + Beg;
 
 	//射线检测
-	GetWorld()->SweepSingleByObjectType(HitResult, Beg, End, FQuat::Identity, ObjQueryParams, Shape, QueryParams);
-	FString Text = FString::Printf(TEXT("Hit at location:%s___ %s"), *HitResult.ImpactPoint.ToString(),*GetDebugName(HitResult.GetActor()));
+	bool IsHit = GetWorld()->SweepSingleByObjectType(HitResult, Beg, End, FQuat::Identity, ObjQueryParams, Shape, QueryParams);
+	UE_LOG(LogTemp, Warning, TEXT("%d"), IsHit);
+	FString Text = FString::Printf(TEXT("Hit at location:%s___ %s"),*HitResult.ImpactPoint.ToString(), *GetDebugName(HitResult.GetActor()));
 	DrawDebugString(GetWorld(), HitResult.ImpactPoint, Text, nullptr, FColor::Green, 2, true, 1);
-	bool IsHit = HitResult.bBlockingHit;
 	
 	if (IsHit) {
 		
@@ -101,7 +101,7 @@ void ASCharacter::CreateProjectile(TSubclassOf<AActor> SpawnProjectile)
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.Instigator = this;		//设置生成者
 
-		GetWorld()->SpawnActor<AActor>(SpawnProjectile, SpawnTM, SpawnParams);	
+		GetWorld()->SpawnActor<ASBaseProjectile>(SpawnProjectile, SpawnTM, SpawnParams);	
 	}
 	else
 	{
@@ -112,7 +112,7 @@ void ASCharacter::CreateProjectile(TSubclassOf<AActor> SpawnProjectile)
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.Instigator = this;		//设置生成者
 
-		GetWorld()->SpawnActor<AActor>(SpawnProjectile, SpawnTM, SpawnParams);
+		GetWorld()->SpawnActor<ASBaseProjectile>(SpawnProjectile, SpawnTM, SpawnParams);
 	}
 	/*FColor col = IsHit ? FColor::Green : FColor::Red;
 	DrawDebugLine(GetWorld(), Beg, End, col, true, 2, 0, 2);*/
@@ -123,17 +123,18 @@ void ASCharacter::CreateProjectile(TSubclassOf<AActor> SpawnProjectile)
 
 void ASCharacter::UseBaseProjectile()
 {
-	Projectile = ASBaseProjectile().GetClass();
+	
+	CurProjectile = BaseProjectile;
 }
 
 void ASCharacter::UseTeleProjectile()
 {
-	//Projectile = TeleProjectile;
+	CurProjectile = TeleProjectile;
 }
 
 void ASCharacter::UseGProjectile()
 {
-	//Projectile = GProjectile;
+	CurProjectile = GProjectile;
 }
 
 //限制点击一直触发蒙太奇
@@ -142,7 +143,7 @@ void ASCharacter::SetIsAttack() {
 	GetWorld()->GetTimerManager().ClearTimer(AttackTimerHandle);
 }
 void ASCharacter::Attack() {
-	CreateProjectile(Projectile);	
+	CreateProjectile(CurProjectile);
 }
 
 void ASCharacter::PrimaryInteract() {

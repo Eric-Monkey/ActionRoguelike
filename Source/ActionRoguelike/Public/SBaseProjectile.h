@@ -24,6 +24,7 @@ protected:
 	UPROPERTY(EditAnywhere,Category = "ParicleEffects")
 	float LifeTime;
 
+	UPROPERTY()
 	FTimerHandle ProjectileHandle;
 
 	UPROPERTY(EditAnywhere, Category = "ParicleEffects")
@@ -44,7 +45,8 @@ protected:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Explode();
 
-	void SelfDestroy();
+	UFUNCTION()
+	virtual void SelfDestroy();
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

@@ -12,7 +12,6 @@ ASBaseProjectile::ASBaseProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	LifeTime = 4;
 	SphereComp=CreateDefaultSubobject<USphereComponent>("SphereComp");
 	SphereComp->OnComponentHit.AddDynamic(this, &ASBaseProjectile::OnComponentHit);
 	SphereComp->SetCollisionProfileName("Projectile");
@@ -25,7 +24,7 @@ ASBaseProjectile::ASBaseProjectile()
 	ProjectileMoveComp=CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMoveComp");
 	ProjectileMoveComp->bRotationFollowsVelocity = true;
 	ProjectileMoveComp->bInitialVelocityInLocalSpace = true;
-	ProjectileMoveComp->InitialSpeed = 2000.0f;
+	ProjectileMoveComp->InitialSpeed = 3000.0f;
 	ProjectileMoveComp->ProjectileGravityScale = 0;
 
 }
@@ -39,7 +38,6 @@ void ASBaseProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor*
 
 void ASBaseProjectile::Explode_Implementation()
 {
-
 	if (ensure(!IsPendingKill())) {
 		UGameplayStatics::SpawnEmitterAtLocation(this, ParicleEffect, GetActorLocation(), GetActorRotation());
 		Destroy();
@@ -47,9 +45,9 @@ void ASBaseProjectile::Explode_Implementation()
 
 }
 
+
 void ASBaseProjectile::SelfDestroy()
 {
-	UE_LOG(LogTemp, Warning, TEXT("_______31"));
 	Destroy();
 	GetWorld()->GetTimerManager().ClearTimer(ProjectileHandle);
 }
@@ -58,10 +56,8 @@ void ASBaseProjectile::SelfDestroy()
 void ASBaseProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp,Warning,TEXT("_______1"));
-	
+	SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
 	GetWorld()->GetTimerManager().SetTimer(ProjectileHandle,this,&ASBaseProjectile::SelfDestroy,LifeTime);
-	UE_LOG(LogTemp, Warning, TEXT("_______12"));
 }
 
 // Called every frame
@@ -70,4 +66,5 @@ void ASBaseProjectile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
 
