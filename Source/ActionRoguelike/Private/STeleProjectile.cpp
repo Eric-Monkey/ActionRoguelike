@@ -33,7 +33,9 @@ void ASTeleProjectile::SelfDestroy()
 void ASTeleProjectile::TelePawn()
 {
 	APawn* mypawn = GetInstigator();
+	UGameplayStatics::SpawnEmitterAtLocation(this,BegEffect,GetActorLocation(),GetActorRotation());
 	mypawn->TeleportTo(GetActorLocation(), mypawn->GetActorRotation(), false, false);
+	UGameplayStatics::SpawnEmitterAtLocation(this, EndEffect, GetActorLocation(), GetActorRotation());
 	Destroy();
 }
 

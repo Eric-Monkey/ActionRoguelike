@@ -117,8 +117,6 @@ void ASCharacter::CreateProjectile(TSubclassOf<ASBaseProjectile> SpawnProjectile
 	/*FColor col = IsHit ? FColor::Green : FColor::Red;
 	DrawDebugLine(GetWorld(), Beg, End, col, true, 2, 0, 2);*/
 	
-	FColor col = IsHit ? FColor::Green : FColor::Red;
-	DrawDebugLine(GetWorld(), Beg, End, col, true, 2, 0, 2);
 }
 
 void ASCharacter::UseBaseProjectile()
