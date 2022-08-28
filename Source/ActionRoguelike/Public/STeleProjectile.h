@@ -18,6 +18,7 @@ class ACTIONROGUELIKE_API ASTeleProjectile : public ASBaseProjectile
 public:
 	UPROPERTY(EditAnywhere, Category = "ParicleEffects")
 	class UParticleSystem* BegEffect;
+	
 	UPROPERTY(EditAnywhere, Category = "ParicleEffects")
 	class UParticleSystem* EndEffect;
 
@@ -25,8 +26,6 @@ public:
 //	
 	protected:
 	virtual void Explode_Implementation() override;
-
-	virtual void BeginPlay() override;
 
 	void SelfDestroy();
 

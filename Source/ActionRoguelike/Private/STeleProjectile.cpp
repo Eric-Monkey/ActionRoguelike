@@ -19,10 +19,6 @@ void ASTeleProjectile::Explode_Implementation()
 	this->TelePawn();
 }
 
-void ASTeleProjectile::BeginPlay()
-{
-	Super::BeginPlay();
-}
 
 void ASTeleProjectile::SelfDestroy()
 {

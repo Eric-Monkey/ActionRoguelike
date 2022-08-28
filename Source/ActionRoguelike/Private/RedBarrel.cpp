@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "PhysicsEngine/RadialForceComponent.h"
 #include "DrawDebugHelpers.h"
+#include "SAttributeComponent.h"
 
 
 // Sets default values
@@ -34,7 +35,15 @@ void ARedBarrel::BeginPlay()
 }
 
 void ARedBarrel::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
-	RadialForceComp->FireImpulse();
+	if (OtherActor) {
+		RadialForceComp->FireImpulse();
+		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
+		if (AttributeComp) {
+			UE_LOG(LogTemp, Warning, TEXT("Call Function"));
+			AttributeComp->ApplyChangeHealth(-40);
+			Destroy();
+		}
+	}	
 	
 	UE_LOG(LogTemp,Log,TEXT("_________________________________Boom"));
 

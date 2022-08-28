@@ -10,6 +10,7 @@
 #include "LatentActions.h"
 #include "DrawDebugHelpers.h"
 #include "SBaseProjectile.h"
+#include "SAttributeComponent.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -20,14 +21,18 @@ ASCharacter::ASCharacter()
 	SpringArmComp->SetupAttachment(RootComponent);
 	SpringArmComp->bUsePawnControlRotation = true;
 
-
+	//相机组件
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
+	//交互组件
 	InteractComp = CreateDefaultSubobject<USInteractComponent>("InteractComp");
 	IsAttack = false;
+
+	//属性组件
+	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 }
 
 // Called when the game starts or when spawned
