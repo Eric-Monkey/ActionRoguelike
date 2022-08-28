@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "SAttributeComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FApplyHealthChange,AActor*,Attacker,USAttributeComponent*,AttributeComponent, float,health, float,ChangeVal);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FApplyHealthChange, AActor*,Attacker,USAttributeComponent*,AttributeComponent, float,health, float,ChangeVal);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONROGUELIKE_API USAttributeComponent : public UActorComponent
