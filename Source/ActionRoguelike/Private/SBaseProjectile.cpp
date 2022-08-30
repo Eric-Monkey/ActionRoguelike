@@ -6,6 +6,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 ASBaseProjectile::ASBaseProjectile()
@@ -27,6 +28,9 @@ ASBaseProjectile::ASBaseProjectile()
 	ProjectileMoveComp->InitialSpeed = 3000.0f;
 	ProjectileMoveComp->ProjectileGravityScale = 0;
 
+	//ÉùÒô×é¼þ
+	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
+	AudioComp->SetupAttachment(SphereComp);
 }
 
 void ASBaseProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

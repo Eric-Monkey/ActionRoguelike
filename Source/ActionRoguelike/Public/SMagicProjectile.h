@@ -9,7 +9,7 @@
 class USphereComponent;
 class UProjectileMovementComponent;
 class UParticleSystemComponent;
-
+class UAudioComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASMagicProjectile : public ASBaseProjectile
@@ -23,6 +23,7 @@ public:
 protected:
 	UFUNCTION()
 	void OnCompBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 public:	

@@ -10,6 +10,9 @@ class UParticleSystem;
 class USphereComponent;
 class UProjectileMovementComponent;
 class UParticleSystemComponent;
+class USoundCue;
+class UAudioComponent;
+class USoundBase;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASBaseProjectile : public AActor
@@ -27,8 +30,15 @@ protected:
 	UPROPERTY()
 	FTimerHandle ProjectileHandle;
 
-	UPROPERTY(EditAnywhere, Category = "ParicleEffects")
+	UPROPERTY(EditAnywhere, Category = "ParticleEffects")
 	UParticleSystem* ParicleEffect;
+
+	UPROPERTY(EditAnywhere, Category = "ParticleEffects")
+	USoundBase* ImpactCue; 
+
+	//×é¼þ
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="components")
+	UAudioComponent* AudioComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category = "components")
 	USphereComponent* SphereComp;
