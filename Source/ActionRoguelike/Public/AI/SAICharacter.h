@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "SAICharacter.generated.h"
 
 UCLASS()
@@ -16,6 +17,8 @@ public:
 	ASAICharacter();
 
 protected:
+	UPROPERTY(VisibleAnywhere,Category="AI")
+	class UAIPerceptionComponent*  AIPerceptionComponent;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -26,5 +29,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void PostInitializeComponents() override;
 
+	UFUNCTION()
+	void OnTarPerceptionUpdate(AActor* Actor, FAIStimulus Stimulus);
 };

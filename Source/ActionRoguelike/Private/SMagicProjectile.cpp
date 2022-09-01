@@ -7,6 +7,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "SAttributeComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "SBaseProjectile.h"
 // Sets default values
 ASMagicProjectile::ASMagicProjectile()
 {
@@ -25,6 +26,7 @@ void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedCompon
 			}
 			if (ensure(ImpactCue)) {
 				UGameplayStatics::PlaySoundAtLocation(this, ImpactCue, GetActorLocation());
+				UGameplayStatics::PlayWorldCameraShake(GetWorld(),CameraShake,GetActorLocation(),0,300 );
 			}
 			AttributeComp->ApplyChangeHealth(-20);
 			Destroy();

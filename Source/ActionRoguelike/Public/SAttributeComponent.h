@@ -21,11 +21,25 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Attributes")
 	float Health;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
+	float MaxHealth;
 
 public:	
 	UPROPERTY(BlueprintAssignable)
 	FApplyHealthChange ApplyHealthChange;
 
+	UFUNCTION()
+	bool IsAlive();
+
+	UFUNCTION()
+	bool IsFullHealth();
+
+	UFUNCTION()
+	float GetMaxHealth();
+
+	UFUNCTION()
+	float GetHealth();
+
 	UFUNCTION(BlueprintCallable)
-	void ApplyChangeHealth(float ChangeVal);
+	bool ApplyChangeHealth(float Val);
 };

@@ -13,6 +13,7 @@ class UParticleSystemComponent;
 class USoundCue;
 class UAudioComponent;
 class USoundBase;
+class UCameraShakeBase;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASBaseProjectile : public AActor
@@ -36,6 +37,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "ParticleEffects")
 	USoundBase* ImpactCue; 
 
+	UPROPERTY(EditAnywhere, Category = "ParticleEffects")
+	TSubclassOf<UCameraShakeBase> CameraShake;
 	//×é¼þ
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="components")
 	UAudioComponent* AudioComp;

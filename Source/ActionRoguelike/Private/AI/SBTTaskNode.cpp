@@ -6,7 +6,6 @@
 #include "AIController.h"
 #include "AI/SAICharacter.h"
 #include "Math/RotationMatrix.h"
-#include "SBaseProjectile.h"
 
 USBTTaskNode::USBTTaskNode() {
 }

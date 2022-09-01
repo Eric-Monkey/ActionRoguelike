@@ -154,6 +154,14 @@ void ASCharacter::PrimaryInteract() {
 	InteractComp->PrimaryInteract();
 }
 
+void ASCharacter::OnHealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float health, float ChangeVal)
+{
+	if (ChangeVal < 0) {
+		GetMesh()->SetScalarParameterValueOnMaterials("HitGameTime",GetWorld()->GetTimeSeconds());
+		GetMesh()->SetScalarParameterValueOnMaterials("FlashSpeed", 5);
+	}
+}
+
 // Called every frame
 void ASCharacter::Tick(float DeltaTime)
 {
@@ -179,5 +187,11 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("UseBaseProjectile", IE_Pressed, this, &ASCharacter::UseBaseProjectile);
 	PlayerInputComponent->BindAction("UseTeleProjectile", IE_Pressed, this, &ASCharacter::UseTeleProjectile);
 	PlayerInputComponent->BindAction("UseGProjectile",IE_Pressed,this, &ASCharacter::UseGProjectile);
+}
+
+void ASCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	AttributeComp->ApplyHealthChange.AddDynamic(this,&ASCharacter::OnHealthChange);
 }
 
