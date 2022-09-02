@@ -16,6 +16,14 @@ ASAICharacter::ASAICharacter()
 
 	//AI感知组件
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("AIPerceptionComponent");
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
+}
+
+bool ASAICharacter::IsAlive()
+{
+	return AttributeComp->IsAlive();
 }
 
 // Called when the game starts or when spawned
@@ -46,13 +54,16 @@ void ASAICharacter::PostInitializeComponents()
 }
 
 void ASAICharacter::OnTarPerceptionUpdate(AActor* Actor, FAIStimulus Stimulus)
-{
-	AAIController* AIPc = Cast<AAIController>(GetController()); //获取ai控制器
-	if (ensure(AIPc)) {
-		ASCharacter* UpdateCharacter = Cast<ASCharacter>(Actor);
-		if (UpdateCharacter) {
-			AIPc->GetBlackboardComponent()->SetValueAsObject("ToActor", Actor);//将值放入黑板
+{	
+	if (Stimulus.IsActive()) {
+		AAIController* AIPc = Cast<AAIController>(GetController()); //获取ai控制器
+		if (Cast<ASCharacter>(Actor)) {
+			if (ensure(AIPc)) {
+				AIPc->GetBlackboardComponent()->SetValueAsObject("ToActor", Actor);//将值放入黑板
+			};
 		}
-	};
+		
+	}
+		
 }
 

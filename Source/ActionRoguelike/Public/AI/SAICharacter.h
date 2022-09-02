@@ -5,7 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Perception/AIPerceptionTypes.h"
+#include "SAttributeComponent.h"
 #include "SAICharacter.generated.h"
+
+
+class UAIPerceptionComponent;
+class USAttributeComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASAICharacter : public ACharacter
@@ -18,7 +23,13 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere,Category="AI")
-	class UAIPerceptionComponent*  AIPerceptionComponent;
+	UAIPerceptionComponent*  AIPerceptionComponent;
+
+	UPROPERTY(EditAnywhere,Category="Attribute")
+	USAttributeComponent* AttributeComp;
+public:
+	UFUNCTION()
+	bool IsAlive();
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

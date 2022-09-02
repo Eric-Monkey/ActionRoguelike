@@ -19,15 +19,15 @@ void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedCompon
 {
 	
 	if (OtherActor && OtherActor!=GetInstigator()) {
+		if (ensure(ParicleEffect)) {
+			UGameplayStatics::SpawnEmitterAtLocation(this, ParicleEffect, GetActorLocation());
+		}
+		if (ensure(ImpactCue)) {
+			UGameplayStatics::PlaySoundAtLocation(this, ImpactCue, GetActorLocation());
+			UGameplayStatics::PlayWorldCameraShake(this, CameraShake, GetActorLocation(), 0, 300);
+		}
 		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass( USAttributeComponent::StaticClass() ) );
 		if (AttributeComp) {
-			if (ensure(ParicleEffect)) {
-				UGameplayStatics::SpawnEmitterAtLocation(this, ParicleEffect,GetActorLocation());
-			}
-			if (ensure(ImpactCue)) {
-				UGameplayStatics::PlaySoundAtLocation(this, ImpactCue, GetActorLocation());
-				UGameplayStatics::PlayWorldCameraShake(GetWorld(),CameraShake,GetActorLocation(),0,300 );
-			}
 			AttributeComp->ApplyChangeHealth(-20);
 			Destroy();
 		}
