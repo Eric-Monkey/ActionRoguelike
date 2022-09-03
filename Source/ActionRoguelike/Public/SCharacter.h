@@ -80,6 +80,9 @@ protected:
 
 	UFUNCTION()
 	void OnHealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float health, float ChangeVal);
+
+	UFUNCTION(Exec)
+	void Helself(float Val=100);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -52,6 +52,10 @@ bool USAttributeComponent::ApplyChangeHealth (AActor* Attack,float Val)
 	return ChangeVal == 0;
 }
 
+bool USAttributeComponent::Kill(AActor* Attack)
+{
+	return ApplyChangeHealth(Attack, -GetMaxHealth());
+}
 
 
 

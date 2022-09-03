@@ -37,6 +37,9 @@ protected:
 	UFUNCTION()
 	void SpawnAI();
 
+	UFUNCTION(Exec)
+	void KillAll();
+
 	UFUNCTION()
 	void OnQueryFinishedEvent(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 

@@ -29,6 +29,16 @@ void AMyGameModeBase::SpawnAI()
 	}
 }
 
+void AMyGameModeBase::KillAll()
+{
+	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It) {
+		ASAICharacter* AI = *It;
+		if (AI->IsAlive()) {
+			USAttributeComponent::GetAttribute(AI)->Kill(this);
+		}
+	}
+}
+
 void AMyGameModeBase::OnQueryFinishedEvent(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
 {
 	

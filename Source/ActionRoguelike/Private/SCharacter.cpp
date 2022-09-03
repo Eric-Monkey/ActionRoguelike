@@ -162,6 +162,11 @@ void ASCharacter::OnHealthChange(AActor* Attacker, USAttributeComponent* Attribu
 	}
 }
 
+void ASCharacter::Helself(float Val)
+{
+	AttributeComp->ApplyChangeHealth(this, Val);
+}
+
 // Called every frame
 void ASCharacter::Tick(float DeltaTime)
 {

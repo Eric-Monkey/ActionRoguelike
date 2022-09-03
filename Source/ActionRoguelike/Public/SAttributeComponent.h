@@ -44,4 +44,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool ApplyChangeHealth(AActor* Attack,float Val);
+
+	UFUNCTION(BlueprintCallable)
+	bool Kill(AActor* Attack);
 };
