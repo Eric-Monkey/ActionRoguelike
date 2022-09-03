@@ -12,6 +12,13 @@ USAttributeComponent::USAttributeComponent()
 }
 
 
+USAttributeComponent* USAttributeComponent::GetAttribute(AActor* Actor)
+{
+	if (Actor) {
+		return Cast<USAttributeComponent>(Actor->GetComponentByClass(USAttributeComponent::StaticClass()));
+	}
+	return nullptr;
+}
 
 bool USAttributeComponent::IsAlive()
 {
@@ -33,14 +40,14 @@ float USAttributeComponent::GetHealth()
 	return Health;
 }
 
-bool USAttributeComponent::ApplyChangeHealth (float Val)
+bool USAttributeComponent::ApplyChangeHealth (AActor* Attack,float Val)
 {
 	float OldHealth = Health;
 
 	Health = FMath::Clamp<float>(Health+Val,0,MaxHealth);
 
 	float ChangeVal = Health - OldHealth;
-	ApplyHealthChange.Broadcast(nullptr,this, Health, ChangeVal);
+	ApplyHealthChange.Broadcast(Attack,this, Health, ChangeVal);
 
 	return ChangeVal == 0;
 }

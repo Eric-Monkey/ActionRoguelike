@@ -31,11 +31,7 @@ void AMyGameModeBase::SpawnAI()
 
 void AMyGameModeBase::OnQueryFinishedEvent(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
 {
-	TArray<FVector>  Locations = QueryInstance->GetResultsAsLocations();
-	if (QueryStatus != EEnvQueryStatus::Success) {
-		return;
-	}
-
+	
 	//查看世界总AL
 	int AliveAI = 0;
 	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It) {
@@ -54,6 +50,10 @@ void AMyGameModeBase::OnQueryFinishedEvent(UEnvQueryInstanceBlueprintWrapper* Qu
 		return;
 	}
 
+	TArray<FVector>  Locations = QueryInstance->GetResultsAsLocations();
+	if (QueryStatus != EEnvQueryStatus::Success) {
+		return;
+	}
 
 	if (Locations.IsValidIndex(0)) {
 		GetWorld()->SpawnActor<AActor>(SpawnAIClass,Locations[0],FRotator::ZeroRotator);

@@ -20,6 +20,9 @@ public:
 	ARedBarrel();
 
 protected:
+	UPROPERTY(EditAnywhere,Category="Damage")
+	float Damage;
+
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* StaticMeshComp;
 

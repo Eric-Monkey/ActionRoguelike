@@ -7,8 +7,12 @@
 #include "AIController.h"
 #include "SCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "BrainComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/Character.h"
 
 // Sets default values
+
 ASAICharacter::ASAICharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -23,7 +27,37 @@ ASAICharacter::ASAICharacter()
 
 bool ASAICharacter::IsAlive()
 {
-	return AttributeComp->IsAlive();
+	if ensure(AttributeComp) {
+		return AttributeComp->IsAlive();
+	}	
+	return false;
+}
+
+void ASAICharacter::OnHealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float health, float ChangeVal)
+{
+	//
+	if (ChangeVal < 0) {
+
+		AAIController* AIPc = Cast<AAIController>(GetController()); //获取ai控制器
+		if (ensure(AIPc) && Attacker!=this) {
+			AIPc->GetBlackboardComponent()->SetValueAsObject("ToActor", Attacker);//将值放入黑板
+		};
+	}
+
+
+	if ( health <= 0) {
+		AAIController* AIPc = Cast<AAIController>(GetController());
+		if (ensure(AIPc)) {
+			AIPc->GetBrainComponent()->StopLogic("Killer"); //停止行为树
+				
+			GetMesh()->SetAllBodiesSimulatePhysics(true);											//set ragdoll
+			GetMesh()->SetCollisionProfileName("Ragdoll");
+			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+			SetLifeSpan(10);//set lifespan
+		}
+	}
+	
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +85,8 @@ void ASAICharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this,&ASAICharacter::OnTarPerceptionUpdate);
+
+	AttributeComp->ApplyHealthChange.AddDynamic(this, &ASAICharacter::OnHealthChange);
 }
 
 void ASAICharacter::OnTarPerceptionUpdate(AActor* Actor, FAIStimulus Stimulus)
@@ -62,8 +98,6 @@ void ASAICharacter::OnTarPerceptionUpdate(AActor* Actor, FAIStimulus Stimulus)
 				AIPc->GetBlackboardComponent()->SetValueAsObject("ToActor", Actor);//将值放入黑板
 			};
 		}
-		
-	}
-		
+	}		
 }
 

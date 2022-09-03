@@ -12,26 +12,29 @@
 ASMagicProjectile::ASMagicProjectile()
 {
 	ProjectileMoveComp->InitialSpeed = 2000.0f;
-
+	Damage = 20;
 }
 
 void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
-	if (OtherActor && OtherActor!=GetInstigator()) {
-		if (ensure(ParicleEffect)) {
-			UGameplayStatics::SpawnEmitterAtLocation(this, ParicleEffect, GetActorLocation());
-		}
-		if (ensure(ImpactCue)) {
-			UGameplayStatics::PlaySoundAtLocation(this, ImpactCue, GetActorLocation());
-			UGameplayStatics::PlayWorldCameraShake(this, CameraShake, GetActorLocation(), 0, 300);
-		}
-		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass( USAttributeComponent::StaticClass() ) );
-		if (AttributeComp) {
-			AttributeComp->ApplyChangeHealth(-20);
-			Destroy();
+	if (OtherActor->GetClass() != GetInstigator()->GetClass())//Õ¨¿‡Œﬁ…À
+	{
+		if (OtherActor && OtherActor != GetInstigator()) {
+			if (ensure(ParicleEffect)) {
+				UGameplayStatics::SpawnEmitterAtLocation(this, ParicleEffect, GetActorLocation());
+			}
+			if (ensure(ImpactCue)) {
+				UGameplayStatics::PlaySoundAtLocation(this, ImpactCue, GetActorLocation());
+				UGameplayStatics::PlayWorldCameraShake(this, CameraShake, GetActorLocation(), 0, 300);
+			}
+			USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
+			if (AttributeComp) {
+				AttributeComp->ApplyChangeHealth(GetInstigator(), -Damage);
+				Destroy();
+			}
 		}
 	}
+	
 }
 
 // Called when the game starts or when spawned

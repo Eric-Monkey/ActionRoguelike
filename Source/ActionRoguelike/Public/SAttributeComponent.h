@@ -17,6 +17,8 @@ public:
 	// Sets default values for this component's properties
 	USAttributeComponent();
 
+	UFUNCTION(BlueprintCallable,Category="Attribute")
+	static USAttributeComponent* GetAttribute(AActor* Actor);
 protected:
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Attributes")
@@ -41,5 +43,5 @@ public:
 	float GetHealth();
 
 	UFUNCTION(BlueprintCallable)
-	bool ApplyChangeHealth(float Val);
+	bool ApplyChangeHealth(AActor* Attack,float Val);
 };

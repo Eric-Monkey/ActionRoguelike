@@ -30,6 +30,9 @@ protected:
 public:
 	UFUNCTION()
 	bool IsAlive();
+
+	UFUNCTION()
+	void OnHealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent ,float health, float ChangeVal);
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

@@ -25,6 +25,7 @@ ARedBarrel::ARedBarrel()
 	RadialForceComp->bIgnoreOwningActor = true;
 	RadialForceComp->bImpulseVelChange = true;
 	
+	Damage = 40;
 }
 
 // Called when the game starts or when spawned
@@ -40,7 +41,7 @@ void ARedBarrel::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
 		if (AttributeComp) {
 			UE_LOG(LogTemp, Warning, TEXT("Call Function"));
-			AttributeComp->ApplyChangeHealth(-40);
+			AttributeComp->ApplyChangeHealth(this,-Damage);
 			Destroy();
 		}
 	}	

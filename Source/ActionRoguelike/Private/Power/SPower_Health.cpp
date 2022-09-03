@@ -19,7 +19,7 @@ void ASPower_Health::Interact_Implementation(APawn* CallPawn)
 	
 	if (ensure(AttributeComp) && !AttributeComp->IsFullHealth()) {
 		
-		AttributeComp->ApplyChangeHealth(treatMax);
+		AttributeComp->ApplyChangeHealth(this,treatMax);
 		HidePower();
 	}
 
