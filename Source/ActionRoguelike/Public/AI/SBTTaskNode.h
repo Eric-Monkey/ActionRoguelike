@@ -18,6 +18,9 @@ public:
 	USBTTaskNode();
 protected:
 	UPROPERTY(EditAnywhere,Category="AI")
+	float RandomOffset;
+
+	UPROPERTY(EditAnywhere,Category="AI")
 	TSubclassOf<ASBaseProjectile> ProjectileEffect;
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

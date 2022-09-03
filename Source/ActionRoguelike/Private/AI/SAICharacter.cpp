@@ -10,6 +10,7 @@
 #include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
+#include "UI/MyUserWidget.h"
 
 // Sets default values
 
@@ -23,6 +24,7 @@ ASAICharacter::ASAICharacter()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
+	FlashSpeed = 5;
 }
 
 bool ASAICharacter::IsAlive()
@@ -37,7 +39,19 @@ void ASAICharacter::OnHealthChange(AActor* Attacker, USAttributeComponent* Attri
 {
 	//
 	if (ChangeVal < 0) {
+		
+		if (HealthBar == nullptr) {
+			HealthBar = CreateWidget<UMyUserWidget>(GetWorld(), UMG_HealthBar);
+			if (HealthBar) {
+				HealthBar->AttachTo = this;
+				
+				HealthBar->AddToViewport(0);
+			}
+		}
 
+
+		GetMesh()->SetScalarParameterValueOnMaterials("HitGameTime", GetWorld()->GetTimeSeconds());//被击闪光
+		GetMesh()->SetScalarParameterValueOnMaterials("FlashSpeed", FlashSpeed);//闪光事件
 		AAIController* AIPc = Cast<AAIController>(GetController()); //获取ai控制器
 		if (ensure(AIPc) && Attacker!=this) {
 			AIPc->GetBlackboardComponent()->SetValueAsObject("ToActor", Attacker);//将值放入黑板

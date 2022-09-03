@@ -11,6 +11,7 @@
 
 class UAIPerceptionComponent;
 class USAttributeComponent;
+class UMyUserWidget;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASAICharacter : public ACharacter
@@ -22,6 +23,12 @@ public:
 	ASAICharacter();
 
 protected:
+	UPROPERTY()
+	UMyUserWidget* HealthBar;
+
+	UPROPERTY(EditAnywhere,Category="UI")
+	TSubclassOf<UUserWidget> UMG_HealthBar;
+
 	UPROPERTY(VisibleAnywhere,Category="AI")
 	UAIPerceptionComponent*  AIPerceptionComponent;
 
@@ -30,7 +37,8 @@ protected:
 public:
 	UFUNCTION()
 	bool IsAlive();
-
+	UPROPERTY(EditAnywhere,Category="HitFlash")
+	float FlashSpeed;
 	UFUNCTION()
 	void OnHealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent ,float health, float ChangeVal);
 	// Called when the game starts or when spawned
