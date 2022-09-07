@@ -12,6 +12,8 @@ class ACTIONROGUELIKE_API USInteractComponent : public UActorComponent
 {
 	GENERATED_BODY()
 public:
+	UPROPERTY(EditAnywhere,Config="Collision")
+	float radius;
 	void PrimaryInteract();
 public:	
 	// Sets default values for this component's properties

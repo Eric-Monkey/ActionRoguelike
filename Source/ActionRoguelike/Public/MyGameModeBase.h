@@ -43,6 +43,15 @@ protected:
 	UFUNCTION()
 	void OnQueryFinishedEvent(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 
+	//ÖØÉú
+	UPROPERTY(EditAnywhere)
+	float	RespawnTime;
+	UFUNCTION()
+	void RespawnPlayer(AController* NewPc);
+public:
+	UFUNCTION()
+	void OnActorKiller(AActor* killed, AActor* Instigat);
+
 public:
 
 	AMyGameModeBase();

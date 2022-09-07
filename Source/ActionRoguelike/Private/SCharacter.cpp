@@ -162,7 +162,7 @@ void ASCharacter::OnHealthChange(AActor* Attacker, USAttributeComponent* Attribu
 	}
 }
 
-void ASCharacter::Helself(float Val)
+void ASCharacter::Helself(float Val)/* default = 100 */
 {
 	AttributeComp->ApplyChangeHealth(this, Val);
 }

@@ -47,4 +47,5 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool Kill(AActor* Attack);
+
 };

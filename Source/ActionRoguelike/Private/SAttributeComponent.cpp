@@ -2,6 +2,7 @@
 
 
 #include "SAttributeComponent.h"
+#include "MyGameModeBase.h"
 
 // Sets default values for this component's properties
 USAttributeComponent::USAttributeComponent()
@@ -42,13 +43,20 @@ float USAttributeComponent::GetHealth()
 
 bool USAttributeComponent::ApplyChangeHealth (AActor* Attack,float Val)
 {
+	if (!GetOwner()->CanBeDamaged()) { return false; };
+
 	float OldHealth = Health;
-
 	Health = FMath::Clamp<float>(Health+Val,0,MaxHealth);
-
 	float ChangeVal = Health - OldHealth;
 	ApplyHealthChange.Broadcast(Attack,this, Health, ChangeVal);
 
+	//Õë¶ÔËÀÍöActor²Ù×÷
+	if (Health == 0 && ChangeVal < 0) {
+		AMyGameModeBase* GM = GetWorld()->GetAuthGameMode<AMyGameModeBase>();
+		if (GM) {
+			GM->OnActorKiller(GetOwner(), Attack);
+		}
+	}
 	return ChangeVal == 0;
 }
 
