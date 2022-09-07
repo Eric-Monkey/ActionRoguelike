@@ -24,6 +24,8 @@ public:
 	// Sets default values for this actor's properties
 	ASBaseProjectile();
 
+	UPROPERTY(EditAnywhere, Category = "Impulse")
+	float Multiply_Impulse;
 protected:
 	UPROPERTY(EditAnywhere,Category = "ParicleEffects")
 	float LifeTime;

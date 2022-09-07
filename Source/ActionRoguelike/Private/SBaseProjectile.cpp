@@ -31,6 +31,8 @@ ASBaseProjectile::ASBaseProjectile()
 	//ÉùÒô×é¼þ
 	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
 	AudioComp->SetupAttachment(SphereComp);
+
+	Multiply_Impulse = 1;
 }
 
 void ASBaseProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

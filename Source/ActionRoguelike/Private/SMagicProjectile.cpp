@@ -8,6 +8,7 @@
 #include "SAttributeComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "SBaseProjectile.h"
+#include "SBlueprintFunctionLibrary.h"
 // Sets default values
 ASMagicProjectile::ASMagicProjectile()
 {
@@ -31,9 +32,13 @@ void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedCompon
 			UGameplayStatics::PlaySoundAtLocation(this, ImpactCue, GetActorLocation());
 			UGameplayStatics::PlayWorldCameraShake(this, CameraShake, GetActorLocation(), 0, 300);
 		}
+
 		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
 		if (AttributeComp) {
-			AttributeComp->ApplyChangeHealth(GetInstigator(), -Damage);
+			/*AttributeComp->ApplyChangeHealth(GetInstigator(), -Damage);
+			Destroy();*/
+			USBlueprintFunctionLibrary::ApplyDamageDirection(this->GetInstigator(), OtherActor, Damage ,SweepResult,this);
+			
 			Destroy();
 		}
 	}
