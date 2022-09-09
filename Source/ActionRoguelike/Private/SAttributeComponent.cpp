@@ -57,7 +57,7 @@ bool USAttributeComponent::ApplyChangeHealth (AActor* Attack,float Val)
 			GM->OnActorKiller(GetOwner(), Attack);
 		}
 	}
-	return ChangeVal == 0;
+	return ChangeVal != 0;
 }
 
 bool USAttributeComponent::Kill(AActor* Attack)

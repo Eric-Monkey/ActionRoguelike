@@ -11,6 +11,7 @@
 #include "DrawDebugHelpers.h"
 #include "SBaseProjectile.h"
 #include "SAttributeComponent.h"
+#include "GAS/SActionComponent.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -33,6 +34,8 @@ ASCharacter::ASCharacter()
 
 	//属性组件
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
+	//能力组件
+	ActionComp = CreateDefaultSubobject<USActionComponent>("ActionComp");
 }
 
 // Called when the game starts or when spawned
@@ -140,6 +143,16 @@ void ASCharacter::UseGProjectile()
 	CurProjectile = GProjectile;
 }
 
+void ASCharacter::StartAction_Sprint()
+{
+	ActionComp->StartActionForName(this,"Sprint");
+}
+
+void ASCharacter::EndAction_Sprint()
+{
+	ActionComp->EndActionForName(this, "Sprint");
+}
+
 //限制点击一直触发蒙太奇
 void ASCharacter::SetIsAttack() {
 	IsAttack = false;
@@ -154,11 +167,23 @@ void ASCharacter::PrimaryInteract() {
 	InteractComp->PrimaryInteract();
 }
 
+FVector ASCharacter::GetPawnViewLocation() const
+{
+	return CameraComp->GetComponentLocation();
+}
+
+
 void ASCharacter::OnHealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float health, float ChangeVal)
 {
 	if (ChangeVal < 0) {
 		GetMesh()->SetScalarParameterValueOnMaterials("HitGameTime",GetWorld()->GetTimeSeconds());
 		GetMesh()->SetScalarParameterValueOnMaterials("FlashSpeed", 5);
+	}
+	
+	//死亡
+	if (health <=0 && ChangeVal<0) {
+		APlayerController* Pc = Cast<APlayerController>(GetController());
+		DisableInput(Pc);
 	}
 }
 
@@ -192,6 +217,9 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("UseBaseProjectile", IE_Pressed, this, &ASCharacter::UseBaseProjectile);
 	PlayerInputComponent->BindAction("UseTeleProjectile", IE_Pressed, this, &ASCharacter::UseTeleProjectile);
 	PlayerInputComponent->BindAction("UseGProjectile",IE_Pressed,this, &ASCharacter::UseGProjectile);
+
+	PlayerInputComponent->BindAction("Sprint",IE_Pressed,this,&ASCharacter::StartAction_Sprint);
+	PlayerInputComponent->BindAction("Sprint",IE_Released,this,&ASCharacter::EndAction_Sprint);
 }
 
 void ASCharacter::PostInitializeComponents()

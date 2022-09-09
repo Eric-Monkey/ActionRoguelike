@@ -13,6 +13,7 @@ class USpringArmComponent;
 class USInteractComponent;
 class ASBaseProjectile;
 class USAttributeComponent;
+class USActionComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
@@ -55,6 +56,8 @@ protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	USAttributeComponent* AttributeComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USActionComponent* ActionComp;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -73,10 +76,16 @@ protected:
 
 	void UseGProjectile();
 
+	void StartAction_Sprint();
+
+	void EndAction_Sprint();
+
 	UFUNCTION(BlueprintCallable)
 	void Attack();
 
 	void PrimaryInteract();
+
+	virtual FVector GetPawnViewLocation() const override;
 
 	UFUNCTION()
 	void OnHealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float health, float ChangeVal);

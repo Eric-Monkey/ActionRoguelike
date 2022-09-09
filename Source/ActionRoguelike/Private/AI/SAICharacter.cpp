@@ -11,6 +11,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "UI/MyUserWidget.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 
@@ -67,7 +68,8 @@ void ASAICharacter::OnHealthChange(AActor* Attacker, USAttributeComponent* Attri
 			GetMesh()->SetAllBodiesSimulatePhysics(true);											//set ragdoll
 			GetMesh()->SetCollisionProfileName("Ragdoll");
 			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+			GetCharacterMovement()->DisableMovement();
+			
 			SetLifeSpan(10);//set lifespan
 		}
 	}
