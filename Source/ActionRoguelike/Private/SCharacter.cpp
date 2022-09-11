@@ -60,73 +60,85 @@ void ASCharacter::MoveRight(float value)
 	AddMovementInput(RightVector, value);
 }
 
-void ASCharacter::PlayAttackAnim() {
-	if (AttackMontage && !IsAttack) {
-		IsAttack = true;
-		float Dely = PlayAnimMontage(AttackMontage,1);
-		GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle,this, &ASCharacter::SetIsAttack,Dely/3,true);
-	}
-}
+//重构废弃
+//void ASCharacter::PlayAttackAnim() {
+//	if (AttackMontage && !IsAttack) {
+//		IsAttack = true;
+//		float Dely = PlayAnimMontage(AttackMontage,1);
+//		GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle,this, &ASCharacter::SetIsAttack,Dely/3,true);
+//	}
+//}
 
-void ASCharacter::CreateProjectile(TSubclassOf<ASBaseProjectile> SpawnProjectile)
-{
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	
-	FCollisionObjectQueryParams ObjQueryParams;
-	ObjQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	ObjQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-	ObjQueryParams.AddObjectTypesToQuery(ECC_Pawn);
+//重构废弃
+// void ASCharacter::CreateProjectile(TSubclassOf<ASBaseProjectile> SpawnProjectile)
+//{
+//	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+//	
+//	FCollisionObjectQueryParams ObjQueryParams;
+//	ObjQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+//	ObjQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+//	ObjQueryParams.AddObjectTypesToQuery(ECC_Pawn);
+//
+//	//设置忽视Actor队列
+//	FCollisionQueryParams QueryParams;
+//	QueryParams.AddIgnoredActor(this);
+//
+//	//设置扫描形状
+//	FCollisionShape Shape;
+//	Shape.SetSphere(10);
+//
+//	//击中结果
+//	FHitResult HitResult;
+//
+//	//起始位置
+//	FVector Beg = CameraComp->GetComponentLocation();
+//	//结束位置
+//	FVector End = CameraComp->GetComponentRotation().Vector() * 5000 + Beg;
+//
+//	//射线检测
+//	bool IsHit = GetWorld()->SweepSingleByObjectType(HitResult, Beg, End, FQuat::Identity, ObjQueryParams, Shape, QueryParams);
+//	UE_LOG(LogTemp, Warning, TEXT("%d"), IsHit);
+//	FString Text = FString::Printf(TEXT("Hit at location:%s___ %s"),*HitResult.ImpactPoint.ToString(), *GetDebugName(HitResult.GetActor()));
+//	DrawDebugString(GetWorld(), HitResult.ImpactPoint, Text, nullptr, FColor::Green, 2, true, 1);
+//	
+//	if (IsHit) {
+//		
+//		FVector HitPoint = HitResult.ImpactPoint;	//获取击中点
+//		FRotator FProjectileRot = FRotationMatrix::MakeFromX(HitPoint - HandLocation).Rotator();
+//		FTransform SpawnTM = FTransform(FProjectileRot, HandLocation);
+//
+//		FActorSpawnParameters SpawnParams;
+//		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+//		SpawnParams.Instigator = this;		//设置生成者
+//
+//		GetWorld()->SpawnActor<ASBaseProjectile>(SpawnProjectile, SpawnTM, SpawnParams);	
+//	}
+//	else
+//	{
+//		FRotator FProjectileRot = FRotationMatrix::MakeFromX(End - HandLocation).Rotator();
+//		FTransform SpawnTM = FTransform(FProjectileRot, HandLocation);
+//
+//		FActorSpawnParameters SpawnParams;
+//		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+//		SpawnParams.Instigator = this;		//设置生成者
+//
+//		GetWorld()->SpawnActor<ASBaseProjectile>(SpawnProjectile, SpawnTM, SpawnParams);
+//	}
+//	/*FColor col = IsHit ? FColor::Green : FColor::Red;
+//	DrawDebugLine(GetWorld(), Beg, End, col, true, 2, 0, 2);*/
+//	
+//}
 
-	//设置忽视Actor队列
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(this);
+//限制点击一直触发蒙太奇，重构废弃
+//void ASCharacter::SetIsAttack() {
+//	IsAttack = false;
+//	GetWorld()->GetTimerManager().ClearTimer(AttackTimerHandle);
+//}
 
-	//设置扫描形状
-	FCollisionShape Shape;
-	Shape.SetSphere(10);
-
-	//击中结果
-	FHitResult HitResult;
-
-	//起始位置
-	FVector Beg = CameraComp->GetComponentLocation();
-	//结束位置
-	FVector End = CameraComp->GetComponentRotation().Vector() * 5000 + Beg;
-
-	//射线检测
-	bool IsHit = GetWorld()->SweepSingleByObjectType(HitResult, Beg, End, FQuat::Identity, ObjQueryParams, Shape, QueryParams);
-	UE_LOG(LogTemp, Warning, TEXT("%d"), IsHit);
-	FString Text = FString::Printf(TEXT("Hit at location:%s___ %s"),*HitResult.ImpactPoint.ToString(), *GetDebugName(HitResult.GetActor()));
-	DrawDebugString(GetWorld(), HitResult.ImpactPoint, Text, nullptr, FColor::Green, 2, true, 1);
-	
-	if (IsHit) {
-		
-		FVector HitPoint = HitResult.ImpactPoint;	//获取击中点
-		FRotator FProjectileRot = FRotationMatrix::MakeFromX(HitPoint - HandLocation).Rotator();
-		FTransform SpawnTM = FTransform(FProjectileRot, HandLocation);
-
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.Instigator = this;		//设置生成者
-
-		GetWorld()->SpawnActor<ASBaseProjectile>(SpawnProjectile, SpawnTM, SpawnParams);	
-	}
-	else
-	{
-		FRotator FProjectileRot = FRotationMatrix::MakeFromX(End - HandLocation).Rotator();
-		FTransform SpawnTM = FTransform(FProjectileRot, HandLocation);
-
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.Instigator = this;		//设置生成者
-
-		GetWorld()->SpawnActor<ASBaseProjectile>(SpawnProjectile, SpawnTM, SpawnParams);
-	}
-	/*FColor col = IsHit ? FColor::Green : FColor::Red;
-	DrawDebugLine(GetWorld(), Beg, End, col, true, 2, 0, 2);*/
-	
-}
-
+//重构废弃
+//void ASCharacter::Attack() {
+//	CreateProjectile(CurProjectile);
+//}
 void ASCharacter::UseBaseProjectile()
 {
 	
@@ -153,14 +165,16 @@ void ASCharacter::EndAction_Sprint()
 	ActionComp->EndActionForName(this, "Sprint");
 }
 
-//限制点击一直触发蒙太奇
-void ASCharacter::SetIsAttack() {
-	IsAttack = false;
-	GetWorld()->GetTimerManager().ClearTimer(AttackTimerHandle);
+void ASCharacter::StartAction_Attack()
+{
+	ActionComp->StartActionForName(this,"Attack");
 }
-void ASCharacter::Attack() {
-	CreateProjectile(CurProjectile);
+
+void ASCharacter::EndAction_Attack()
+{
+	ActionComp->EndActionForName(this,"Attack");
 }
+
 
 void ASCharacter::PrimaryInteract() {
 	if (ensure(InteractComp))
@@ -199,6 +213,11 @@ void ASCharacter::Tick(float DeltaTime)
 
 }
 
+void ASCharacter::PossessedBy(AController* NewController)
+{
+	ActionComp->InitAction();
+}
+
 // Called to bind functionality to input
 void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -210,7 +229,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("TurnUp",this,&APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("TurnRight",this,&APawn::AddControllerYawInput);
 
-	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ASCharacter::PlayAttackAnim);
+	
 	PlayerInputComponent->BindAction("Jump",IE_Pressed,this, &ASCharacter::Jump);
 	PlayerInputComponent->BindAction("Interact",IE_Pressed,this, &ASCharacter::PrimaryInteract);
 
@@ -220,6 +239,9 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	PlayerInputComponent->BindAction("Sprint",IE_Pressed,this,&ASCharacter::StartAction_Sprint);
 	PlayerInputComponent->BindAction("Sprint",IE_Released,this,&ASCharacter::EndAction_Sprint);
+
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ASCharacter::StartAction_Attack);
+	PlayerInputComponent->BindAction("Attack", IE_Released, this, &ASCharacter::EndAction_Attack);
 }
 
 void ASCharacter::PostInitializeComponents()

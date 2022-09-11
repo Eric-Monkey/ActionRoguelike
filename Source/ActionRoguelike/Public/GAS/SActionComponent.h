@@ -18,9 +18,11 @@ public:
 	USActionComponent();
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Action")
+	
 	TArray<USAction*> Actions;
-
+	
+	UPROPERTY(EditAnywhere, Category = "Action")
+	TArray<TSubclassOf<USAction>> DefaultActions;
 
 	UFUNCTION(BlueprintCallable,Category="Action")
 	void AddAction(TSubclassOf<USAction> NewAction);
@@ -30,6 +32,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	bool EndActionForName(AActor* Starter, FName ActionName);
+
+	void InitAction();
 	
 public:	
 	// Called every frame

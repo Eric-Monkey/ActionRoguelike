@@ -66,9 +66,9 @@ protected:
 
 	void MoveRight(float value);
 	
-	void PlayAttackAnim();
-
-	void CreateProjectile(TSubclassOf<ASBaseProjectile> SpawnProjectile);
+	//void PlayAttackAnim();
+	//void Attack();
+	//void CreateProjectile(TSubclassOf<ASBaseProjectile> SpawnProjectile);
 
 	void UseBaseProjectile();
 
@@ -80,8 +80,12 @@ protected:
 
 	void EndAction_Sprint();
 
+	void StartAction_Attack();
+
+	void EndAction_Attack();
+
 	UFUNCTION(BlueprintCallable)
-	void Attack();
+	
 
 	void PrimaryInteract();
 
@@ -96,6 +100,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void PossessedBy(AController* NewController) override;
+	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 

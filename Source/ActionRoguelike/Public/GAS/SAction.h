@@ -25,4 +25,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly , Category ="Action")
 	FName ActionName;
+
+	UWorld* GetWorld() const override;
 };

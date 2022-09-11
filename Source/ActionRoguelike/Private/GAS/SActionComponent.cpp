@@ -15,7 +15,7 @@ void USActionComponent::AddAction(TSubclassOf<USAction> NewAction)
 		return;
 	}
 
-	USAction * Action= NewObject<USAction>(GetOuter(),NewAction);
+	USAction * Action= NewObject<USAction>(this,NewAction);
 	if (Action) {
 		Actions.Add(Action);
 	}
@@ -41,6 +41,14 @@ bool USActionComponent::EndActionForName(AActor* Starter, FName ActionName)
 		}
 	}
 	return false;
+}
+
+void USActionComponent::InitAction()
+{
+	for (TSubclassOf<USAction> DefaultAction : DefaultActions)
+	{
+		AddAction(DefaultAction);
+	}
 }
 
 void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
