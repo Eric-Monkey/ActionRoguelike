@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "SInterface.h"
+#include "GameplayTagContainer.h"
 #include "SChest.generated.h"
 
 class UStaticMeshComponent;
@@ -15,16 +16,21 @@ class ACTIONROGUELIKE_API ASChest : public AActor, public ISInterface
 	GENERATED_BODY()
 
 	void Interact_Implementation(APawn* CallPawn);
-public:
 
+public:
 	UPROPERTY(EditAnywhere)
 	float LidRotationForX;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tags")
+	FGameplayTagContainer CardTags;
 	
 public:	
 	// Sets default values for this actor's properties
 	ASChest();
 
 protected:
+	
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* BaseMesh;
@@ -37,5 +43,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
 
 };

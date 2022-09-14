@@ -18,6 +18,7 @@ USActionAttack::USActionAttack()
 
 void USActionAttack::StartAction_Implementation(AActor* Starter)
 {
+	Super::StartAction_Implementation(Starter);
 	ASCharacter* Player =Cast<ASCharacter>(Starter);
 	if (Player) {
 		
@@ -32,6 +33,7 @@ void USActionAttack::StartAction_Implementation(AActor* Starter)
 	}
 
 }
+
 
 void USActionAttack::AttackDelay(ACharacter* Starter)
 {
@@ -73,15 +75,12 @@ void USActionAttack::AttackDelay(ACharacter* Starter)
 		FVector HitPoint = HitResult.ImpactPoint;	//获取击中点
 		FRotator FProjectileRot = FRotationMatrix::MakeFromX(HitPoint - HandLocation).Rotator();
 		FTransform SpawnTM = FTransform(FProjectileRot, HandLocation);
-
 		GetWorld()->SpawnActor<ASBaseProjectile>(CurrentProjectile, SpawnTM, SpawnParams);
 	}
 	else
 	{
 		FRotator FProjectileRot = FRotationMatrix::MakeFromX(End - HandLocation).Rotator();
 		FTransform SpawnTM = FTransform(FProjectileRot, HandLocation);
-
-
 		GetWorld()->SpawnActor<ASBaseProjectile>(CurrentProjectile, SpawnTM, SpawnParams);
 	}
 

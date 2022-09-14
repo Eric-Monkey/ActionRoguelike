@@ -4,14 +4,42 @@
 #include "GAS/SAction.h"
 #include "GAS/SActionComponent.h"
 
-void USAction::StartAction_Implementation(AActor* Starter)
+USActionComponent* USAction::GetOwnerActionComp() const
 {
+	USActionComponent* ActionComp = Cast<USActionComponent>(GetOuter());
+	if (ensure(ActionComp)) {
+		return ActionComp;
+	}
+	return nullptr;
+}
 
+
+
+bool USAction::CanStart_Implementation(AActor* Starter)
+{
+	if (IsRuning()) {
+		return false;
+	}
+
+	if (GetOwnerActionComp()->ActiveGameplayTags.HasAny(BlockTags)) {
+		return false;
+	}
+	return true;
+}
+
+void USAction::StartAction_Implementation(AActor* Starter)
+{	
+	/*UE_LOG(LogTemp, Warning, TEXT("StartAction:%s"), *ActionName.ToString());*/
+	USActionComponent* ActionComp = GetOwnerActionComp();
+	ActionComp->ActiveGameplayTags.AppendTags(GrantsTags);
+	bIsRuning = true;
 }
 
 void USAction::EndAction_Implementation(AActor* Starter)
 {
-
+	USActionComponent* ActionComp = GetOwnerActionComp();
+	ActionComp->ActiveGameplayTags.RemoveTags(GrantsTags);
+	bIsRuning = false;
 }
 
 UWorld* USAction::GetWorld() const
@@ -21,4 +49,9 @@ UWorld* USAction::GetWorld() const
 		return ActionComp->GetWorld();
 	}
 	return nullptr;
+}
+
+bool USAction::IsRuning()
+{
+	return bIsRuning;
 }

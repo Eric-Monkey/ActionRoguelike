@@ -38,7 +38,9 @@ protected:
 public: 
 	USActionAttack();
 
+	UFUNCTION()
 	virtual void StartAction_Implementation(AActor* Starter) override;
+
 	
 	UFUNCTION()
 	void AttackDelay(ACharacter* Starter);

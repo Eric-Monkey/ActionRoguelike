@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "SAction.h"
+#include "GameplayTagContainer.h"
 #include "SActionComponent.generated.h"
 
 
@@ -18,11 +19,8 @@ public:
 	USActionComponent();
 
 public:
-	
-	TArray<USAction*> Actions;
-	
-	UPROPERTY(EditAnywhere, Category = "Action")
-	TArray<TSubclassOf<USAction>> DefaultActions;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Tags")
+	FGameplayTagContainer ActiveGameplayTags;
 
 	UFUNCTION(BlueprintCallable,Category="Action")
 	void AddAction(TSubclassOf<USAction> NewAction);
@@ -33,8 +31,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	bool EndActionForName(AActor* Starter, FName ActionName);
 
+	UFUNCTION()
 	void InitAction();
+
+protected:
 	
+	UPROPERTY()
+		TArray<USAction*> Actions;
+
+	UPROPERTY(EditAnywhere, Category = "Action")
+		TArray<TSubclassOf<USAction>> DefaultActions;
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

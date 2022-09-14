@@ -1,0 +1,4 @@
+[/Script/GameplayTags.GameplayTagsList]
+GameplayTagList=(Tag="Attack",DevComment="")
+GameplayTagList=(Tag="Sprint",DevComment="")
+

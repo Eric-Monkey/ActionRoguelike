@@ -30,7 +30,6 @@ ASCharacter::ASCharacter()
 
 	//交互组件
 	InteractComp = CreateDefaultSubobject<USInteractComponent>("InteractComp");
-	IsAttack = false;
 
 	//属性组件
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
@@ -139,21 +138,7 @@ void ASCharacter::MoveRight(float value)
 //void ASCharacter::Attack() {
 //	CreateProjectile(CurProjectile);
 //}
-void ASCharacter::UseBaseProjectile()
-{
-	
-	CurProjectile = BaseProjectile;
-}
 
-void ASCharacter::UseTeleProjectile()
-{
-	CurProjectile = TeleProjectile;
-}
-
-void ASCharacter::UseGProjectile()
-{
-	CurProjectile = GProjectile;
-}
 
 void ASCharacter::StartAction_Sprint()
 {
@@ -175,6 +160,26 @@ void ASCharacter::EndAction_Attack()
 	ActionComp->EndActionForName(this,"Attack");
 }
 
+
+void ASCharacter::StartAction_TeleAttack()
+{
+	ActionComp->StartActionForName(this, "TeleAttack");
+}
+
+void ASCharacter::EndAction_TeleAttack()
+{
+	ActionComp->EndActionForName(this, "TeleAttack");
+
+
+}void ASCharacter::StartAction_GAttack()
+{
+	ActionComp->StartActionForName(this, "GAttack");
+}
+
+void ASCharacter::EndAction_GAttack()
+{
+	ActionComp->EndActionForName(this, "GAttack");
+}
 
 void ASCharacter::PrimaryInteract() {
 	if (ensure(InteractComp))
@@ -233,9 +238,12 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump",IE_Pressed,this, &ASCharacter::Jump);
 	PlayerInputComponent->BindAction("Interact",IE_Pressed,this, &ASCharacter::PrimaryInteract);
 
-	PlayerInputComponent->BindAction("UseBaseProjectile", IE_Pressed, this, &ASCharacter::UseBaseProjectile);
-	PlayerInputComponent->BindAction("UseTeleProjectile", IE_Pressed, this, &ASCharacter::UseTeleProjectile);
-	PlayerInputComponent->BindAction("UseGProjectile",IE_Pressed,this, &ASCharacter::UseGProjectile);
+	PlayerInputComponent->BindAction("TeleAttack", IE_Pressed, this, &ASCharacter::StartAction_TeleAttack);
+	PlayerInputComponent->BindAction("TeleAttack", IE_Released, this, &ASCharacter::EndAction_TeleAttack);
+
+
+	PlayerInputComponent->BindAction("GeleAttack",IE_Pressed,this, &ASCharacter::StartAction_GAttack);
+	PlayerInputComponent->BindAction("GeleAttack",IE_Released,this, &ASCharacter::EndAction_GAttack);
 
 	PlayerInputComponent->BindAction("Sprint",IE_Pressed,this,&ASCharacter::StartAction_Sprint);
 	PlayerInputComponent->BindAction("Sprint",IE_Released,this,&ASCharacter::EndAction_Sprint);

@@ -25,8 +25,10 @@ bool USActionComponent::StartActionForName(AActor* Starter, FName ActionName)
 {
 	for (USAction* Action : Actions ) {
 		if (Action && Action->ActionName == ActionName) {
-			Action->StartAction(Starter);
-			return true;
+			if (Action->CanStart(Starter)) { //标签符合才执行
+				Action->StartAction(Starter);
+				return true;
+			}
 		}
 	}
 	return false;
@@ -34,10 +36,12 @@ bool USActionComponent::StartActionForName(AActor* Starter, FName ActionName)
 
 bool USActionComponent::EndActionForName(AActor* Starter, FName ActionName)
 {
-	for (USAction* Action:Actions) {
+	for (USAction* Action :Actions) {
 		if (Action && Action->ActionName == ActionName){
-			Action->EndAction(Starter);
-			return true;
+			if (Action->IsRuning()) { //不在运行中才结束
+				Action->EndAction(Starter);
+				return true;
+			}	
 		}
 	}
 	return false;
@@ -45,6 +49,7 @@ bool USActionComponent::EndActionForName(AActor* Starter, FName ActionName)
 
 void USActionComponent::InitAction()
 {
+
 	for (TSubclassOf<USAction> DefaultAction : DefaultActions)
 	{
 		AddAction(DefaultAction);
@@ -55,5 +60,7 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	// ...
+	FString DebugMsg = GetNameSafe(GetOwner())+ ":" +ActiveGameplayTags.ToStringSimple();
+	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMsg);
 }
 

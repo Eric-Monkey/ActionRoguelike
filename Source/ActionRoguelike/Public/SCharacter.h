@@ -20,26 +20,7 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 {
 	GENERATED_BODY()
 public:
-	TSubclassOf<ASBaseProjectile> CurProjectile;
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ASBaseProjectile> BaseProjectile;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ASBaseProjectile> TeleProjectile;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ASBaseProjectile> GProjectile;
-	
-	UPROPERTY(EditAnywhere)
-	UAnimMontage* AttackMontage;
-
-	bool IsAttack;
-
-	FTimerHandle AttackTimerHandle;
-
-	void SetIsAttack();
-	
 	// Sets default values for this character's properties
 	ASCharacter();
 
@@ -70,11 +51,6 @@ protected:
 	//void Attack();
 	//void CreateProjectile(TSubclassOf<ASBaseProjectile> SpawnProjectile);
 
-	void UseBaseProjectile();
-
-	void UseTeleProjectile();
-
-	void UseGProjectile();
 
 	void StartAction_Sprint();
 
@@ -83,6 +59,14 @@ protected:
 	void StartAction_Attack();
 
 	void EndAction_Attack();
+
+	void StartAction_TeleAttack();
+
+	void EndAction_TeleAttack();
+
+	void StartAction_GAttack();
+
+	void EndAction_GAttack();
 
 	UFUNCTION(BlueprintCallable)
 	
