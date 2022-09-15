@@ -21,13 +21,13 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	USizeBox* ParentSizeBox;
 
-	UPROPERTY(EditAnywhere,Category="AI")
+	UPROPERTY(EditAnywhere,Category="UI")
 	FVector WordOffset;
 
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="UI")
+	UPROPERTY(VisibleAnywhere,Export,BlueprintReadWrite,Category="UI")
 	AActor* AttachTo;
 
-	UPROPERTY(EditAnywhere,Category="WolrdUI")
+	UPROPERTY(EditAnywhere,Category="UI")
 	TSubclassOf<UUserWidget> UI;
 
 protected:

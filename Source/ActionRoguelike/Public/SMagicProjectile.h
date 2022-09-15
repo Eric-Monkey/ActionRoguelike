@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SBaseProjectile.h"
+#include "GameplayTagContainer.h"
 #include "SMagicProjectile.generated.h"
 
 class USphereComponent;
@@ -35,4 +36,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;	
 
+	UPROPERTY(EditDefaultsOnly,Category="Tags")
+	FGameplayTag ParryTag;
 };

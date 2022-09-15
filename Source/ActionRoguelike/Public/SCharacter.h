@@ -68,9 +68,11 @@ protected:
 
 	void EndAction_GAttack();
 
-	UFUNCTION(BlueprintCallable)
-	
+	void StartAction_Parry();
 
+	void EndAction_Parry();
+
+	UFUNCTION(BlueprintCallable)
 	void PrimaryInteract();
 
 	virtual FVector GetPawnViewLocation() const override;

@@ -21,18 +21,12 @@ ASChest::ASChest()
 
 
 void ASChest::Interact_Implementation(APawn* CallPawn) {
-	UE_LOG(LogTemp, Log, TEXT("Call Open Chest"));
+
 	USActionComponent* ActionComp = Cast<USActionComponent>(CallPawn->GetComponentByClass(USActionComponent::StaticClass()));
-	UE_LOG(LogTemp, Log, TEXT("Call Open Chest1"));
-	if (ActionComp) {
-		UE_LOG(LogTemp, Log, TEXT("Call Open Chest2"));
-	}
 	if (ActionComp && ActionComp->ActiveGameplayTags.HasAnyExact(CardTags)) {
 
-		UE_LOG(LogTemp, Log, TEXT("Open Chest"));
 		LipMesh->SetRelativeRotation(FRotator(LidRotationForX, 0, 0));
-	}
-		//LipMesh->SetRelativeRotation(FRotator(LidRotationForX, 0, 0));
+	}		
 }
 
 // Called when the game starts or when spawned

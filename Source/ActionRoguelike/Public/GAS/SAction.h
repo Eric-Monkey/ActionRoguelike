@@ -36,7 +36,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent,Category ="Action")
 	void StartAction(AActor* Starter);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Action")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable ,Category = "Action")
 	void EndAction(AActor* Starter);
 
 	UPROPERTY(EditDefaultsOnly , Category ="Action")

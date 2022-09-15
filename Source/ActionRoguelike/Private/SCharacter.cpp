@@ -181,6 +181,15 @@ void ASCharacter::EndAction_GAttack()
 	ActionComp->EndActionForName(this, "GAttack");
 }
 
+
+void ASCharacter::StartAction_Parry() {
+	ActionComp->StartActionForName(this, "Parry");
+}
+void ASCharacter::EndAction_Parry() {
+	ActionComp->EndActionForName(this, "Parry");
+}
+
+
 void ASCharacter::PrimaryInteract() {
 	if (ensure(InteractComp))
 	InteractComp->PrimaryInteract();
@@ -250,6 +259,9 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ASCharacter::StartAction_Attack);
 	PlayerInputComponent->BindAction("Attack", IE_Released, this, &ASCharacter::EndAction_Attack);
+
+	PlayerInputComponent->BindAction("Parry", IE_Pressed, this, &ASCharacter::StartAction_Parry);
+	PlayerInputComponent->BindAction("Parry", IE_Released, this, &ASCharacter::EndAction_Parry);
 }
 
 void ASCharacter::PostInitializeComponents()

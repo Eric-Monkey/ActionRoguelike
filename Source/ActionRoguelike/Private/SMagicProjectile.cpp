@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "SBaseProjectile.h"
 #include "SBlueprintFunctionLibrary.h"
+#include "GAS/SActionComponent.h"
 // Sets default values
 ASMagicProjectile::ASMagicProjectile()
 {
@@ -25,14 +26,27 @@ void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedCompon
 		}
 	}
 	if (OtherActor && OtherActor != GetInstigator()) {
+		//≈–∂® «∑Ò±ª∏Òµ≤
+		USActionComponent* ActionComp = Cast<USActionComponent>(OtherActor->GetComponentByClass(USActionComponent::StaticClass())) ;
+		
+		if (ActionComp && ActionComp->ActiveGameplayTags.HasTag(ParryTag)) {
+			
+			ProjectileMoveComp->Velocity = -(ProjectileMoveComp->Velocity);
+			this->SetInstigator(Cast<APawn>(OtherActor));
+
+			return;
+		}
+
+		//±¨’®
 		if (ensure(ParicleEffect)) {
 			UGameplayStatics::SpawnEmitterAtLocation(this, ParicleEffect, GetActorLocation());
 		}
+		//…˘“Ù
 		if (ensure(ImpactCue)) {
 			UGameplayStatics::PlaySoundAtLocation(this, ImpactCue, GetActorLocation());
 			UGameplayStatics::PlayWorldCameraShake(this, CameraShake, GetActorLocation(), 0, 300);
 		}
-
+		//…À∫¶
 		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
 		if (AttributeComp) {
 			/*AttributeComp->ApplyChangeHealth(GetInstigator(), -Damage);
