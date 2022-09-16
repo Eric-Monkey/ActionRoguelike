@@ -33,21 +33,45 @@ protected:
 
 	UPROPERTY(EditAnywhere,Category="AI")
 	TSubclassOf<AActor> SpawnAIClass; //生成的类
-
+	//生成AI
 	UFUNCTION()
-	void SpawnAI();
+	void SpawnAI(); 
 
+	//重生
+	UPROPERTY(EditAnywhere, Category = "Respawn")
+		float	RespawnTime; //重生等待时间
+	UFUNCTION()
+		void RespawnPlayer(AController* NewPc); //重生
+	
+	
+	//命令_杀死所有敌人
 	UFUNCTION(Exec)
 	void KillAll();
 
+	//绑定查询完成函数
 	UFUNCTION()
 	void OnQueryFinishedEvent(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 
-	//重生
-	UPROPERTY(EditAnywhere)
-	float	RespawnTime;
+
+	//道具种类
+	UPROPERTY(EditAnywhere,Category="Credits")
+	TArray< TSubclassOf<AActor> > PowerClass;
+	//杀敌分数
+	UPROPERTY(EditAnywhere,Category="Credits")
+	int32 KillCredits;
+	//生成的道具数量
+	UPROPERTY(EditAnywhere, Category = "Credits")
+	int32 DesiredPowerCount;
+	//生成道具的间隔
+	UPROPERTY(EditAnywhere, Category = "Credits")
+	float DesiredPowerDistence;
+	
+	UPROPERTY(EditAnywhere, Category = "Credits")
+	UEnvQuery* EQS_FindPowerLocation;
+
 	UFUNCTION()
-	void RespawnPlayer(AController* NewPc);
+	void OnQueryPowerLocation(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+
 public:
 	UFUNCTION()
 	void OnActorKiller(AActor* killed, AActor* Instigat);
@@ -57,4 +81,5 @@ public:
 	AMyGameModeBase();
 
 	virtual void StartPlay() override;
+	
 };

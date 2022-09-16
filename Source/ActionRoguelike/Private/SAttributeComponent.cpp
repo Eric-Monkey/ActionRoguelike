@@ -54,7 +54,7 @@ bool USAttributeComponent::ApplyChangeHealth (AActor* Attack,float Val)
 	if (Health == 0 && ChangeVal < 0) {
 		AMyGameModeBase* GM = GetWorld()->GetAuthGameMode<AMyGameModeBase>();
 		if (GM) {
-			GM->OnActorKiller(GetOwner(), Attack);
+			GM->OnActorKiller(GetOwner(),Attack);
 		}
 	}
 	return ChangeVal != 0;

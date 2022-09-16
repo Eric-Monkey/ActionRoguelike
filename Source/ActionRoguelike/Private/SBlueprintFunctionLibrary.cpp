@@ -11,7 +11,7 @@ bool USBlueprintFunctionLibrary::ApplyDamage(AActor* Attack, AActor* TargeActor,
 {
 	USAttributeComponent* AttributeComp=USAttributeComponent::GetAttribute(TargeActor);
 	if (AttributeComp) {
-		return AttributeComp->ApplyChangeHealth(TargeActor,-Val);
+		return AttributeComp->ApplyChangeHealth(Attack,-Val);
 	}
 	return false;
 }

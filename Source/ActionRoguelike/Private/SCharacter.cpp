@@ -229,6 +229,7 @@ void ASCharacter::Tick(float DeltaTime)
 
 void ASCharacter::PossessedBy(AController* NewController)
 {
+	Super::PossessedBy(NewController);
 	ActionComp->InitAction();
 }
 

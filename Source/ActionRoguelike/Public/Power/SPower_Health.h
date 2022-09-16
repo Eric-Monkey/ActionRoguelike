@@ -18,6 +18,8 @@ class ACTIONROGUELIKE_API ASPower_Health : public ASPowerBase
 public:
 	ASPower_Health();
 protected:
+	UPROPERTY(EditAnywhere,Category="Credits")
+	int32	CreditsCast;
 
 	UPROPERTY(EditAnywhere,Category="Attribute")
 	float treatMax;
