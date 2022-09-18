@@ -12,6 +12,7 @@
 #include "GameFramework/Character.h"
 #include "UI/MyUserWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GAS/SActionComponent.h"
 
 // Sets default values
 
@@ -24,8 +25,12 @@ ASAICharacter::ASAICharacter()
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("AIPerceptionComponent");
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
+	//Attribute 组件
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 	FlashSpeed = 5;
+
+	//ActionComp 组件
+	ActionComp = CreateDefaultSubobject<USActionComponent>("ActionComp");
 }
 
 bool ASAICharacter::IsAlive()

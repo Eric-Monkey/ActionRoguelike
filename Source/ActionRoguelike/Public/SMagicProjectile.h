@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "SBaseProjectile.h"
 #include "GameplayTagContainer.h"
+#include "GAS/SAction.h"
 #include "SMagicProjectile.generated.h"
 
 class USphereComponent;
@@ -28,7 +29,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Damage")
 	float Damage;
-	
+
+	//子弹附带特殊效果，eg:流血，燃烧
+	UPROPERTY(EditDefaultsOnly,Category = "Effect");
+	TSubclassOf<USAction> ProjectileEffect;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

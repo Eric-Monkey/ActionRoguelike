@@ -6,19 +6,22 @@
 #include "DrawDebugHelpers.h"
 
 static TAutoConsoleVariable<bool> bDebugDraw(TEXT("su.DebugDraw"),false,TEXT("Enable bDebugDraw"),ECVF_Cheat);
+
 // Sets default values for this component's properties
 USInteractComponent::USInteractComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
+	
+	Traceradius = 20.f;
+	TraceTypes = ECollisionChannel::ECC_WorldDynamic;
+	TraceDistance = 500.f;
 }
 
-void USInteractComponent::PrimaryInteract() {
+
+void USInteractComponent::BesterInteract()
+{
 	FCollisionObjectQueryParams CollisionObjQuePar;
-	CollisionObjQuePar.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldDynamic);
+	CollisionObjQuePar.AddObjectTypesToQuery(TraceTypes);//ECollisionChannel::ECC_WorldDynamic
 
 	TArray<FHitResult> HitResults;
 	FVector Beg;
@@ -28,38 +31,74 @@ void USInteractComponent::PrimaryInteract() {
 	APawn* MyPawn = Cast<APawn>(MyPOwner);
 	Beg = MyPawn->GetPawnViewLocation();
 	PawnEyeRot = MyPawn->GetViewRotation();
-	End = Beg + PawnEyeRot.Vector() * 500;
+	End = Beg + PawnEyeRot.Vector() * TraceDistance;
 
 	FCollisionShape Shape;
-	radius = 20.f;
-	Shape.SetSphere(radius);
+	Shape.SetSphere(Traceradius);
 
 	//bool IsHit = GetWorld()->LineTraceSingleByObjectType(HitResult,Beg,End, CollisionObjQuePar);
-	bool IsHit = GetWorld()->SweepMultiByObjectType(HitResults,Beg,End, FQuat::Identity, CollisionObjQuePar,Shape);
-	
+	bool IsHit = GetWorld()->SweepMultiByObjectType(HitResults, Beg, End, FQuat::Identity, CollisionObjQuePar, Shape);
+
+
+	//每次检测前清除聚焦对象
+	FocusedActor = nullptr;
+
 	if (IsHit) {
 		for (FHitResult& HitResult : HitResults) {
 			//测试命中范围
 			if (bDebugDraw.GetValueOnGameThread()) {
-				DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, radius, 32, FColor::Green, false, 2.0f);
-				
+				DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, Traceradius , 32, FColor::Green, false, 2.0f);
 			}
-		
+
 			AActor* HitActor = HitResult.GetActor();
 			if (HitActor->Implements<USInterface>()) {
-				ISInterface::Execute_Interact(HitActor, MyPawn);
+				
+				//将交互对象保存,做个交互UI,而不是直接调用接口
+				FocusedActor = HitActor;	
 				break;
+
 			}
-		}		
+		}
+		//如果检测到Actor显示Ui
+		if (FocusedActor && InteractUIClass!=nullptr) {
+			//没创建UI创建实例
+			if (InteractUIInstence == nullptr) {
+				InteractUIInstence = CreateWidget<UMyUserWidget>(GetWorld(),InteractUIClass);
+			}
+			//有实例，切换聚焦对象，判断有没有添加到视口
+			if (InteractUIInstence) {
+
+				InteractUIInstence->AttachTo = FocusedActor;
+
+				if (! InteractUIInstence->IsInViewport()) {
+
+					InteractUIInstence->AddToViewport();
+
+				}	
+			}
+		}
+		
+	}
+	if (!FocusedActor && InteractUIInstence) {
+
+		InteractUIInstence->RemoveFromParent();
+
 	}
 	//测试射线
 	if (bDebugDraw.GetValueOnGameThread()) {
+		
 		FColor col = IsHit ? FColor::Green : FColor::Red;
 		DrawDebugLine(GetWorld(), Beg, End, col, true, 2, 0, 2);
 	}
+}
 
-
-	
+void USInteractComponent::PrimaryInteract() {
+	//调用交互接口	
+	if (FocusedActor==nullptr) {
+		return;
+	}
+	APawn* MyPawn = Cast<APawn>(GetOwner());
+	ISInterface::Execute_Interact(FocusedActor , MyPawn);
 }
 
 // Called when the game starts
@@ -67,8 +106,6 @@ void USInteractComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
 }
 
 
@@ -77,6 +114,6 @@ void USInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	BesterInteract();
 }
 

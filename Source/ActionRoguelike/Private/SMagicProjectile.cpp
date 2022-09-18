@@ -25,6 +25,7 @@ void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedCompon
 			return;
 		}
 	}
+	//确保打的不是自己
 	if (OtherActor && OtherActor != GetInstigator()) {
 		//判定是否被格挡
 		USActionComponent* ActionComp = Cast<USActionComponent>(OtherActor->GetComponentByClass(USActionComponent::StaticClass())) ;
@@ -36,6 +37,8 @@ void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedCompon
 
 			return;
 		}
+
+		
 
 		//爆炸
 		if (ensure(ParicleEffect)) {
@@ -53,6 +56,11 @@ void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedCompon
 			Destroy();*/
 			USBlueprintFunctionLibrary::ApplyDamageDirection(this->GetInstigator(), OtherActor, Damage ,SweepResult,this);
 			
+			//施加特殊效果
+			if (ActionComp && ProjectileEffect) {
+				ActionComp->AddAction(GetInstigator(), ProjectileEffect);
+			}
+
 			Destroy();
 		}
 	}

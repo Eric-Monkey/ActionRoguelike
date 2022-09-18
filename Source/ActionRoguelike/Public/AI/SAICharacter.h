@@ -12,6 +12,7 @@
 class UAIPerceptionComponent;
 class USAttributeComponent;
 class UMyUserWidget;
+class USActionComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASAICharacter : public ACharacter
@@ -34,6 +35,9 @@ protected:
 
 	UPROPERTY(EditAnywhere,Category="Attribute")
 	USAttributeComponent* AttributeComp;
+
+	UPROPERTY(VisibleAnywhere,Category="Actions")
+	USActionComponent* ActionComp;
 public:
 	UFUNCTION()
 	bool IsAlive();

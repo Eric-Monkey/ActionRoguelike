@@ -162,7 +162,7 @@ void AMyGameModeBase::OnActorKiller(AActor* killed, AActor* Instigat)
 	}
 
 	//如果Ai被打死
-aaaaaaa	ASAICharacter*  AIPlayer= Cast<ASAICharacter>(killed);
+	ASAICharacter*  AIPlayer= Cast<ASAICharacter>(killed);
 	APawn* MyPawn = Cast<APawn>(Instigat);
 	if (AIPlayer && MyPawn) {
 		ASPlayerState* PS= MyPawn->GetPlayerState<ASPlayerState>();

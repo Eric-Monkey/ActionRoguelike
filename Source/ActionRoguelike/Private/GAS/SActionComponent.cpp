@@ -9,7 +9,17 @@ USActionComponent::USActionComponent()
 }
 
 
-void USActionComponent::AddAction(TSubclassOf<USAction> NewAction)
+bool USActionComponent::RemoveAction(USAction* RemoveAction)
+{
+	if (RemoveAction && !RemoveAction->IsRuning()) {
+		Actions.Remove(RemoveAction);
+		return true;
+	}
+	return false;
+}
+	
+
+void USActionComponent::AddAction(AActor* Starter, TSubclassOf<USAction> NewAction)
 {
 	if ( !NewAction ) {
 		return;
@@ -18,6 +28,11 @@ void USActionComponent::AddAction(TSubclassOf<USAction> NewAction)
 	USAction * Action= NewObject<USAction>(this,NewAction);
 	if (Action) {
 		Actions.Add(Action);
+		//可以添加即开始能力，并且可以激活能力
+		if (Action->isAutoStart && Action->CanStart()) {
+			
+			Action->StartAction(Starter); //需要参数，实施效果的Action
+		}
 	}
 }
 
@@ -25,7 +40,7 @@ bool USActionComponent::StartActionForName(AActor* Starter, FName ActionName)
 {
 	for (USAction* Action : Actions ) {
 		if (Action && Action->ActionName == ActionName) {
-			if (Action->CanStart(Starter)) { //标签符合才执行
+			if (Action->CanStart()) { //标签符合才执行
 				Action->StartAction(Starter);
 				return true;
 			}
@@ -38,7 +53,7 @@ bool USActionComponent::EndActionForName(AActor* Starter, FName ActionName)
 {
 	for (USAction* Action :Actions) {
 		if (Action && Action->ActionName == ActionName){
-			if (Action->IsRuning()) { //不在运行中才结束
+			if (Action->IsRuning()) { //在运行中才结束
 				Action->EndAction(Starter);
 				return true;
 			}	
@@ -52,7 +67,7 @@ void USActionComponent::InitAction()
 
 	for (TSubclassOf<USAction> DefaultAction : DefaultActions)
 	{
-		AddAction(DefaultAction);
+		AddAction(GetOwner(),DefaultAction);
 	}
 }
 

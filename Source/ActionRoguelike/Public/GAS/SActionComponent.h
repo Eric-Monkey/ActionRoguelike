@@ -19,11 +19,16 @@ public:
 	USActionComponent();
 
 public:
+	//º§ªÓ±Í«©
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Tags")
 	FGameplayTagContainer ActiveGameplayTags;
 
+
+	UFUNCTION(BlueprintCallable,Category="ActionEffect")
+	bool RemoveAction(USAction* RemoveAction);
+
 	UFUNCTION(BlueprintCallable,Category="Action")
-	void AddAction(TSubclassOf<USAction> NewAction);
+	void AddAction(AActor* Starter, TSubclassOf<USAction> NewAction);
 
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	bool StartActionForName(AActor* Starter , FName ActionName);

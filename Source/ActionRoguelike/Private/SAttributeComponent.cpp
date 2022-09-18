@@ -43,7 +43,9 @@ float USAttributeComponent::GetHealth()
 
 bool USAttributeComponent::ApplyChangeHealth (AActor* Attack,float Val)
 {
-	if (!GetOwner()->CanBeDamaged()) { return false; };
+	//god 模式不可以被伤害
+
+	if (Val< 0 && !GetOwner()->CanBeDamaged()) { return false; };
 
 	float OldHealth = Health;
 	Health = FMath::Clamp<float>(Health+Val,0,MaxHealth);

@@ -18,9 +18,10 @@ class ACTIONROGUELIKE_API ASPower_Health : public ASPowerBase
 public:
 	ASPower_Health();
 protected:
+	//使用花费
 	UPROPERTY(EditAnywhere,Category="Credits")
 	int32	CreditsCast;
-
+	//治疗量
 	UPROPERTY(EditAnywhere,Category="Attribute")
 	float treatMax;
 

@@ -14,8 +14,10 @@ class ACTIONROGUELIKE_API USBlueprintFunctionLibrary : public UBlueprintFunction
 {
 	GENERATED_BODY()
 public:
+	UFUNCTION(BlueprintCallable, Category = "Damage")
 	static bool ApplyDamage(AActor* Attack, AActor* TargeActor, float Val);
 
+	UFUNCTION(BlueprintCallable,Category="Damage")
 	static bool ApplyDamageDirection(AActor* Attack, AActor* TargeActor, float Val,const FHitResult& HitResult ,class ASBaseProjectile* BaseProjectile);
 
 

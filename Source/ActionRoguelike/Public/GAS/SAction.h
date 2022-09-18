@@ -30,8 +30,13 @@ protected:
 	FGameplayTagContainer BlockTags;
 	
 public:
+	USAction();
+
+	UPROPERTY(EditAnywhere,Category="Effect")
+	bool isAutoStart;
+
 	UFUNCTION(BlueprintNativeEvent,Category = "Action")
-	bool CanStart(AActor* Starter);
+	bool CanStart();
 
 	UFUNCTION(BlueprintNativeEvent,Category ="Action")
 	void StartAction(AActor* Starter);

@@ -4,6 +4,12 @@
 #include "GAS/SAction.h"
 #include "GAS/SActionComponent.h"
 
+
+USAction::USAction()
+{
+	isAutoStart = false;
+}
+
 USActionComponent* USAction::GetOwnerActionComp() const
 {
 	USActionComponent* ActionComp = Cast<USActionComponent>(GetOuter());
@@ -13,9 +19,7 @@ USActionComponent* USAction::GetOwnerActionComp() const
 	return nullptr;
 }
 
-
-
-bool USAction::CanStart_Implementation(AActor* Starter)
+bool USAction::CanStart_Implementation()
 {
 	if (IsRuning()) {
 		return false;
