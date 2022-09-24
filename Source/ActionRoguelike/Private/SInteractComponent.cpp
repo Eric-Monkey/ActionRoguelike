@@ -108,7 +108,6 @@ void USInteractComponent::ServerPrimaryInteract_Implementation(AActor* ClientFoc
 	ISInterface::Execute_Interact(ClientFocused, MyPawn);
 }
 
-
 // Called when the game starts
 void USInteractComponent::BeginPlay()
 {

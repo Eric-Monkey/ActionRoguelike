@@ -1,4 +1,5 @@
 #include "GAS/SActionComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 USActionComponent::USActionComponent()
@@ -6,6 +7,7 @@ USActionComponent::USActionComponent()
 
 	PrimaryComponentTick.bCanEverTick = true;
 
+	SetIsReplicatedByDefault(true);
 }
 
 
@@ -41,6 +43,11 @@ bool USActionComponent::StartActionForName(AActor* Starter, FName ActionName)
 	for (USAction* Action : Actions ) {
 		if (Action && Action->ActionName == ActionName) {
 			if (Action->CanStart()) { //标签符合才执行
+				// if is client ,call server startAction
+				if (! GetOwner()->HasAuthority()) {
+					ServerStartActionForName(Starter, ActionName);
+				}
+				
 				Action->StartAction(Starter);
 				return true;
 			}
@@ -49,11 +56,22 @@ bool USActionComponent::StartActionForName(AActor* Starter, FName ActionName)
 	return false;
 }
 
+//Server_RPC_StartActionComp
+void USActionComponent::ServerStartActionForName_Implementation(AActor* Starter, FName ActionName)
+{
+	StartActionForName(Starter,ActionName);
+
+}
+
 bool USActionComponent::EndActionForName(AActor* Starter, FName ActionName)
 {
 	for (USAction* Action :Actions) {
 		if (Action && Action->ActionName == ActionName){
 			if (Action->IsRuning()) { //在运行中才结束
+				//if is client
+				if (! GetOwner()->HasAuthority()) {
+					ServerEndActionForName(Starter,ActionName);
+				}
 				Action->EndAction(Starter);
 				return true;
 			}	
@@ -61,6 +79,12 @@ bool USActionComponent::EndActionForName(AActor* Starter, FName ActionName)
 	}
 	return false;
 }
+
+void USActionComponent::ServerEndActionForName_Implementation(AActor* Starter, FName ActionName)
+{
+	EndActionForName(Starter,ActionName);
+}
+
 
 void USActionComponent::InitAction()
 {
@@ -77,5 +101,10 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	// ...
 	FString DebugMsg = GetNameSafe(GetOwner())+ ":" +ActiveGameplayTags.ToStringSimple();
 	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMsg);
+}
+
+void USActionComponent::BeginPlay()
+{
+	InitAction();
 }
 

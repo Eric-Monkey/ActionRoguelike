@@ -46,9 +46,16 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Action")
 		TArray<TSubclassOf<USAction>> DefaultActions;
+
+
+	UFUNCTION(Server,Reliable)
+	void ServerStartActionForName(AActor* Starter, FName ActionName);
+	
+	UFUNCTION(Server,Reliable)
+	void ServerEndActionForName(AActor* Starter, FName ActionName);
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	virtual void BeginPlay() override;
 };
