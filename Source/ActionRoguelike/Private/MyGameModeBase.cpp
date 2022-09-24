@@ -10,7 +10,7 @@
 #include "SPlayerState.h"
 
 
-static TAutoConsoleVariable<bool> CvarSpawnBots(TEXT("su.spawnBots"),true,TEXT("enable spawnBots"),ECVF_Cheat);
+static TAutoConsoleVariable<bool> CvarSpawnBots(TEXT("su.spawnBots"),false ,TEXT("enable spawnBots"),ECVF_Cheat);
 AMyGameModeBase::AMyGameModeBase()
 {
 	SpawnDelayTime = 2;

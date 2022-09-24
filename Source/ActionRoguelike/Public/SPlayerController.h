@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "SPlayerController.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPawnChange, APawn*, InPawn); //用来修复Pawng更新时，UI不更新问题
 /**
  * 
  */
@@ -13,5 +14,11 @@ UCLASS()
 class ACTIONROGUELIKE_API ASPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnPawnChange OnPawnChange;
+
+	UFUNCTION()
+	virtual void SetPawn(APawn* InPawn) override;
 };

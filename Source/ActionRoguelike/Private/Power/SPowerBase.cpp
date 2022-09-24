@@ -14,6 +14,7 @@ ASPowerBase::ASPowerBase()
 
 	respawnTime = 10.0f;
 	//SphereComp = RootComponent;
+	SetReplicates(true);
 }
 
 // Called when the game starts or when spawned

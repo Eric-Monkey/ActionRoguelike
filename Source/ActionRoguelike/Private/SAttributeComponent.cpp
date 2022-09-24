@@ -3,13 +3,15 @@
 
 #include "SAttributeComponent.h"
 #include "MyGameModeBase.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 USAttributeComponent::USAttributeComponent()
 {
 	MaxHealth = 100;
 	Health = MaxHealth;
-	// ...
+	// 支持同步
+	SetIsReplicatedByDefault(true);
 }
 
 
@@ -50,8 +52,12 @@ bool USAttributeComponent::ApplyChangeHealth (AActor* Attack,float Val)
 	float OldHealth = Health;
 	Health = FMath::Clamp<float>(Health+Val,0,MaxHealth);
 	float ChangeVal = Health - OldHealth;
-	ApplyHealthChange.Broadcast(Attack,this, Health, ChangeVal);
+	ApplyHealthChange.Broadcast(Attack, this, Health, ChangeVal);
 
+	if (ChangeVal !=0) {	//不判断死亡Actor会影响UI
+		NetMulticastApplyHealthChange(Attack, Health, ChangeVal);
+	}
+	
 	//针对死亡Actor操作
 	if (Health == 0 && ChangeVal < 0) {
 		AMyGameModeBase* GM = GetWorld()->GetAuthGameMode<AMyGameModeBase>();
@@ -62,10 +68,21 @@ bool USAttributeComponent::ApplyChangeHealth (AActor* Attack,float Val)
 	return ChangeVal != 0;
 }
 
+void USAttributeComponent::NetMulticastApplyHealthChange_Implementation(AActor* Attacker, float NewHealth, float ChangeVal)
+{
+	ApplyHealthChange.Broadcast(Attacker,this,NewHealth,ChangeVal);
+}
+
+
 bool USAttributeComponent::Kill(AActor* Attack)
 {
 	return ApplyChangeHealth(Attack, -GetMaxHealth());
 }
 
+void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(USAttributeComponent,Health);
+	DOREPLIFETIME(USAttributeComponent,MaxHealth);
+}
 

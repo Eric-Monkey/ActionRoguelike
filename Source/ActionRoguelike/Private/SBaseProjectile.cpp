@@ -44,11 +44,17 @@ void ASBaseProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor*
 
 void ASBaseProjectile::Explode_Implementation()
 {
-	if (ensure(!IsPendingKill())) {
-		UGameplayStatics::SpawnEmitterAtLocation(this, ParicleEffect, GetActorLocation(), GetActorRotation());
-		Destroy();
+	//±¨’®
+	if (ensure(ParicleEffect)) {
+		UGameplayStatics::SpawnEmitterAtLocation(this, ParicleEffect, GetActorLocation());
+	}
+	//…˘“Ù
+	if (ensure(ImpactCue)) {
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactCue, GetActorLocation());
+		UGameplayStatics::PlayWorldCameraShake(this, CameraShake, GetActorLocation(), 0, 300);
 	}
 
+	Destroy();
 }
 
 

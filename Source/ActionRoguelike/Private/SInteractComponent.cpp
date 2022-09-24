@@ -88,18 +88,26 @@ void USInteractComponent::BesterInteract()
 	if (bDebugDraw.GetValueOnGameThread()) {
 		
 		FColor col = IsHit ? FColor::Green : FColor::Red;
-		DrawDebugLine(GetWorld(), Beg, End, col, true, 2, 0, 2);
+		DrawDebugLine(GetWorld(), Beg, End, col, false , 0, 0,1);
 	}
 }
 
+
 void USInteractComponent::PrimaryInteract() {
+	ServerPrimaryInteract(FocusedActor);
+}
+
+//ServerRPC_PrimaryInteract
+void USInteractComponent::ServerPrimaryInteract_Implementation(AActor* ClientFocused)
+{
 	//调用交互接口	
-	if (FocusedActor==nullptr) {
+	if (ClientFocused == nullptr) {
 		return;
 	}
 	APawn* MyPawn = Cast<APawn>(GetOwner());
-	ISInterface::Execute_Interact(FocusedActor , MyPawn);
+	ISInterface::Execute_Interact(ClientFocused, MyPawn);
 }
+
 
 // Called when the game starts
 void USInteractComponent::BeginPlay()
@@ -113,7 +121,11 @@ void USInteractComponent::BeginPlay()
 void USInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	BesterInteract();
+	
+	APawn* MyPawn = Cast<APawn>(GetOwner());
+	if (MyPawn->IsLocallyControlled()) {
+		BesterInteract();
+	}
+	
 }
 

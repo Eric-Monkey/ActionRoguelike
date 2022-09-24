@@ -30,12 +30,17 @@ public:
 	ASChest();
 
 protected:
-	
+	//Í¬²½
+	UPROPERTY(ReplicatedUsing="OnRep_ChestOpen", BlueprintReadOnly)
+	bool bChestOpen;
+
+	UFUNCTION()
+	void OnRep_ChestOpen();
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* BaseMesh;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	UStaticMeshComponent* LipMesh;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -44,5 +49,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 };

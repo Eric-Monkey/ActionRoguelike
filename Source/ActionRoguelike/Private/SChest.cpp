@@ -4,6 +4,7 @@
 #include "SChest.h"
 #include "Components/StaticMeshComponent.h"
 #include "GAS/SActionComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ASChest::ASChest()
@@ -17,16 +18,28 @@ ASChest::ASChest()
 	LipMesh->SetupAttachment(BaseMesh);
 
 	LidRotationForX = 110;
+	bChestOpen = false;
+	SetReplicates(true);
 }
 
 
 void ASChest::Interact_Implementation(APawn* CallPawn) {
-
-	USActionComponent* ActionComp = Cast<USActionComponent>(CallPawn->GetComponentByClass(USActionComponent::StaticClass()));
+	//测试同步，注释前置条件
+	/*USActionComponent* ActionComp = Cast<USActionComponent>(CallPawn->GetComponentByClass(USActionComponent::StaticClass()));
 	if (ActionComp && ActionComp->ActiveGameplayTags.HasAnyExact(CardTags)) {
 
 		LipMesh->SetRelativeRotation(FRotator(LidRotationForX, 0, 0));
-	}		
+	}		*/
+
+	bChestOpen = !bChestOpen;
+	float CurrentPitch = bChestOpen ? LidRotationForX : 0;
+	LipMesh->SetRelativeRotation(FRotator(CurrentPitch, 0, 0));
+}
+
+void ASChest::OnRep_ChestOpen()
+{
+	float CurrentPitch = bChestOpen ? LidRotationForX : 9;
+	LipMesh->SetRelativeRotation(FRotator(CurrentPitch, 0, 0));
 }
 
 // Called when the game starts or when spawned
@@ -41,5 +54,11 @@ void ASChest::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ASChest::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASChest,bChestOpen);
 }
 

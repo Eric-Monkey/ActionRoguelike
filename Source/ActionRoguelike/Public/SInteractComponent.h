@@ -40,6 +40,8 @@ protected:
 	UPROPERTY()
 	class UMyUserWidget* InteractUIInstence;
 
+	UFUNCTION(Server,Reliable)
+	void ServerPrimaryInteract(AActor* ClientFocused);
 public:	
 
 	UFUNCTION()
@@ -47,6 +49,7 @@ public:
 
 	UFUNCTION()
 	void BesterInteract();
+	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 

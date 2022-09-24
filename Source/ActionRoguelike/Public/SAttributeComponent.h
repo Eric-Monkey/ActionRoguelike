@@ -21,10 +21,13 @@ public:
 	static USAttributeComponent* GetAttribute(AActor* Actor);
 protected:
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Attributes")
+	UPROPERTY(Replicated,EditDefaultsOnly,BlueprintReadOnly,Category="Attributes")
 	float Health;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
+	UPROPERTY(Replicated,EditAnywhere, BlueprintReadOnly, Category = "Attributes")
 	float MaxHealth;
+
+	UFUNCTION(NetMulticast,Reliable)
+	void NetMulticastApplyHealthChange(AActor* Attacker,float NewHealth , float ChangeVal);
 
 public:	
 	UPROPERTY(BlueprintAssignable)

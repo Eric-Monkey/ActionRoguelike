@@ -10,7 +10,11 @@
 #include "SBaseProjectile.h"
 #include "SBlueprintFunctionLibrary.h"
 #include "GAS/SActionComponent.h"
+
+
 // Sets default values
+static TAutoConsoleVariable<bool> CvarTeammatesHurt(TEXT("su.TeammatesHurt"), true, TEXT("Enable TeammatesHurt"), ECVF_Cheat);
+
 ASMagicProjectile::ASMagicProjectile()
 {
 	ProjectileMoveComp->InitialSpeed = 2000.0f;
@@ -19,12 +23,13 @@ ASMagicProjectile::ASMagicProjectile()
 
 void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {	
-	if (GetInstigator()) {
+	if (!CvarTeammatesHurt.GetValueOnGameThread() && GetInstigator()) {
 		if (OtherActor->GetClass() == GetInstigator()->GetClass())//同类无伤
 		{
 			return;
 		}
 	}
+
 	//确保打的不是自己
 	if (OtherActor && OtherActor != GetInstigator()) {
 		//判定是否被格挡
@@ -38,17 +43,6 @@ void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedCompon
 			return;
 		}
 
-		
-
-		//爆炸
-		if (ensure(ParicleEffect)) {
-			UGameplayStatics::SpawnEmitterAtLocation(this, ParicleEffect, GetActorLocation());
-		}
-		//声音
-		if (ensure(ImpactCue)) {
-			UGameplayStatics::PlaySoundAtLocation(this, ImpactCue, GetActorLocation());
-			UGameplayStatics::PlayWorldCameraShake(this, CameraShake, GetActorLocation(), 0, 300);
-		}
 		//伤害
 		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
 		if (AttributeComp) {
@@ -60,11 +54,11 @@ void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedCompon
 			if (ActionComp && ProjectileEffect) {
 				ActionComp->AddAction(GetInstigator(), ProjectileEffect);
 			}
-
-			Destroy();
 		}
+
+		//声音，爆炸特效
+		Explode();
 	}
-	
 	
 }
 

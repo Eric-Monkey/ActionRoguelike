@@ -3,3 +3,9 @@
 
 #include "SPlayerController.h"
 
+
+void ASPlayerController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+	OnPawnChange.Broadcast(InPawn);
+}

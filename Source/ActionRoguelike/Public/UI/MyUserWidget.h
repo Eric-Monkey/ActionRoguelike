@@ -24,7 +24,7 @@ public:
 	UPROPERTY(EditAnywhere,Category="UI")
 	FVector WordOffset;
 
-	UPROPERTY(VisibleAnywhere,Export,BlueprintReadWrite,Category="UI")
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="UI",meta = (ExposeOnSpawn=true))
 	AActor* AttachTo;
 
 	UPROPERTY(EditAnywhere,Category="UI")
