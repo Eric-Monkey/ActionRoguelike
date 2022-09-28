@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "SAttributeComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FApplyHealthChange, AActor*,Attacker,USAttributeComponent*,AttributeComponent, float,health, float,ChangeVal);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FApplyAttributeChange, AActor*,Attacker,USAttributeComponent*,AttributeComponent, float,health, float,ChangeVal);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONROGUELIKE_API USAttributeComponent : public UActorComponent
@@ -26,13 +26,30 @@ protected:
 	UPROPERTY(Replicated,EditAnywhere, BlueprintReadOnly, Category = "Attributes")
 	float MaxHealth;
 
+	//Å­Æø
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+	float Rage;
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "Attributes")
+	float MaxRage;
+
 	UFUNCTION(NetMulticast,Reliable)
 	void NetMulticastApplyHealthChange(AActor* Attacker,float NewHealth , float ChangeVal);
 
 public:	
 	UPROPERTY(BlueprintAssignable)
-	FApplyHealthChange ApplyHealthChange;
+	FApplyAttributeChange ApplyHealthChange;
 
+	UPROPERTY(BlueprintAssignable)
+	FApplyAttributeChange ApplyRageChange;
+
+	UFUNCTION(BlueprintCallable)
+	bool ApplyChangeHealth(AActor* Attack,float Val);
+
+	UFUNCTION(BlueprintCallable)
+	bool ApplyChangeRage(AActor* Attack, float Val);
+
+	UFUNCTION(BlueprintCallable)
+	bool Kill(AActor* Attack);
 	UFUNCTION()
 	bool IsAlive();
 
@@ -45,10 +62,11 @@ public:
 	UFUNCTION()
 	float GetHealth();
 
-	UFUNCTION(BlueprintCallable)
-	bool ApplyChangeHealth(AActor* Attack,float Val);
 
-	UFUNCTION(BlueprintCallable)
-	bool Kill(AActor* Attack);
+	UFUNCTION()
+	float GetRage();
+
+	UFUNCTION()
+	float GetMaxRage();
 
 };

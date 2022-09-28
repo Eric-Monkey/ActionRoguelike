@@ -34,5 +34,4 @@ protected:
 	UFUNCTION(BlueprintNativeEvent,Category="Effect")
 	void ExecutePeriodEffect(AActor* Instigator);
 
-
 };

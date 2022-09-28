@@ -15,34 +15,6 @@ USAttributeComponent::USAttributeComponent()
 }
 
 
-USAttributeComponent* USAttributeComponent::GetAttribute(AActor* Actor)
-{
-	if (Actor) {
-		return Cast<USAttributeComponent>(Actor->GetComponentByClass(USAttributeComponent::StaticClass()));
-	}
-	return nullptr;
-}
-
-bool USAttributeComponent::IsAlive()
-{
-	return Health>0;
-}
-
-bool USAttributeComponent::IsFullHealth()
-{
-	return MaxHealth <= Health;
-}
-
-float USAttributeComponent::GetMaxHealth()
-{
-	return MaxHealth;
-}
-
-float USAttributeComponent::GetHealth()
-{
-	return Health;
-}
-
 bool USAttributeComponent::ApplyChangeHealth (AActor* Attack,float Val)
 {
 	//god 模式不可以被伤害
@@ -68,6 +40,21 @@ bool USAttributeComponent::ApplyChangeHealth (AActor* Attack,float Val)
 	return ChangeVal != 0;
 }
 
+bool USAttributeComponent::ApplyChangeRage(AActor* Attack, float Val)
+{
+	if (Val!=0) {
+		
+		float OldRage = Rage;
+		Rage = FMath::Clamp<float>(Rage + Val, 0, MaxRage);
+		float ChangeVal = Rage - OldRage;
+		ApplyRageChange.Broadcast(Attack, this, Rage , ChangeVal);
+		return true;
+	}
+
+	return false;
+
+}
+
 void USAttributeComponent::NetMulticastApplyHealthChange_Implementation(AActor* Attacker, float NewHealth, float ChangeVal)
 {
 	ApplyHealthChange.Broadcast(Attacker,this,NewHealth,ChangeVal);
@@ -79,10 +66,51 @@ bool USAttributeComponent::Kill(AActor* Attack)
 	return ApplyChangeHealth(Attack, -GetMaxHealth());
 }
 
-void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(USAttributeComponent,Health);
-	DOREPLIFETIME(USAttributeComponent,MaxHealth);
+bool USAttributeComponent::IsAlive()
+{
+	return Health > 0;
 }
 
+
+bool USAttributeComponent::IsFullHealth()
+{
+	return MaxHealth <= Health;
+}
+
+
+USAttributeComponent* USAttributeComponent::GetAttribute(AActor* Actor)
+{
+	if (Actor) {
+		return Cast<USAttributeComponent>(Actor->GetComponentByClass(USAttributeComponent::StaticClass()));
+	}
+	return nullptr;
+}
+
+
+float USAttributeComponent::GetMaxHealth()
+{
+	return MaxHealth;
+}
+
+float USAttributeComponent::GetHealth()
+{
+	return Health;
+}
+
+float USAttributeComponent::GetRage()
+{
+	return Rage;
+}
+
+float USAttributeComponent::GetMaxRage()
+{
+	return MaxRage;
+}
+
+void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(USAttributeComponent, Health);
+	DOREPLIFETIME(USAttributeComponent, MaxHealth);
+}

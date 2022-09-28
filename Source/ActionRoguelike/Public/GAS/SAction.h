@@ -8,20 +8,41 @@
 #include "GameplayTagContainer.h"
 #include "SAction.generated.h"
 
-/**
- * 
- */
+
 class UWorld;
 class USActionComponent;
 
+USTRUCT()
+struct FACtionRepData
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	bool bIsRunning;
+
+	UPROPERTY()
+	AActor* Starter;
+};
+
+
+/**
+ *
+ */
 UCLASS(Blueprintable)
 class ACTIONROGUELIKE_API USAction : public UObject
 {
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY()
-	bool bIsRuning;
+	UPROPERTY(Replicated)
+	USActionComponent* OwerComp;
+
+	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
+	FACtionRepData RepData;
+
+	UFUNCTION()
+	void OnRep_IsRunning();
 
 	UPROPERTY(EditDefaultsOnly,Category="Tags")
 	FGameplayTagContainer GrantsTags;
@@ -32,11 +53,14 @@ protected:
 public:
 	USAction();
 
+	UFUNCTION()
+	void InitialOwerComp(USActionComponent* NewOwnerComp);
+
 	UPROPERTY(EditAnywhere,Category="Effect")
 	bool isAutoStart;
 
 	UFUNCTION(BlueprintNativeEvent,Category = "Action")
-	bool CanStart();
+	bool CanStart(AActor* Starter = nullptr);
 
 	UFUNCTION(BlueprintNativeEvent,Category ="Action")
 	void StartAction(AActor* Starter);
@@ -53,5 +77,9 @@ public:
 	USActionComponent* GetOwnerActionComp() const;
 
 	UFUNCTION(BlueprintCallable,Category="Action")
-	bool IsRuning();
+	bool IsRunning();
+
+	bool IsSupportedForNetworking() const override {
+		return true;
+	}
 };

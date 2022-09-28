@@ -18,11 +18,25 @@ public:
 	// Sets default values for this component's properties
 	USActionComponent();
 
-public:
-	//激活标签
+protected:
+	
+	UPROPERTY(Replicated)
+		TArray<USAction*> Actions;
+
+	UPROPERTY(EditAnywhere, Category = "Action")
+		TArray<TSubclassOf<USAction>> DefaultActions;
+
+
+	UFUNCTION(Server,Reliable)
+	void ServerStartActionForName(AActor* Starter, FName ActionName);
+	
+	UFUNCTION(Server,Reliable)
+	void ServerEndActionForName(AActor* Starter, FName ActionName);
+
+
+public:	//激活标签
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Tags")
 	FGameplayTagContainer ActiveGameplayTags;
-
 
 	UFUNCTION(BlueprintCallable,Category="ActionEffect")
 	bool RemoveAction(USAction* RemoveAction);
@@ -37,25 +51,15 @@ public:
 	bool EndActionForName(AActor* Starter, FName ActionName);
 
 	UFUNCTION()
-	void InitAction();
+	void InitAction();	
 
-protected:
-	
-	UPROPERTY()
-		TArray<USAction*> Actions;
-
-	UPROPERTY(EditAnywhere, Category = "Action")
-		TArray<TSubclassOf<USAction>> DefaultActions;
-
-
-	UFUNCTION(Server,Reliable)
-	void ServerStartActionForName(AActor* Starter, FName ActionName);
-	
-	UFUNCTION(Server,Reliable)
-	void ServerEndActionForName(AActor* Starter, FName ActionName);
-public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual void BeginPlay() override;
+
+	UFUNCTION(Category = "Action")
+	USAction* GetAction( TSubclassOf<USAction> FindAction);
+
+	bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags);
 };

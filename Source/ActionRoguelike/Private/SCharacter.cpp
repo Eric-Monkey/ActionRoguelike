@@ -201,18 +201,31 @@ FVector ASCharacter::GetPawnViewLocation() const
 }
 
 
-void ASCharacter::OnHealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float health, float ChangeVal)
+void ASCharacter::OnHealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float Health, float ChangeVal)
 {
 	if (ChangeVal < 0) {
+		//被击闪光
 		GetMesh()->SetScalarParameterValueOnMaterials("HitGameTime",GetWorld()->GetTimeSeconds());
 		GetMesh()->SetScalarParameterValueOnMaterials("FlashSpeed", 5);
+		
+		//增加怒气
+		if (AttributeComponent) {
+			
+			AttributeComponent->ApplyChangeRage(Attacker, FMath::Abs(ChangeVal));
+
+		}
 	}
 	
 	//死亡
-	if (health <=0 && ChangeVal<0) {
+	if (Health <=0 && ChangeVal<0) {
 		APlayerController* Pc = Cast<APlayerController>(GetController());
 		DisableInput(Pc);
 	}
+}
+
+void ASCharacter::OnRageChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float Rage, float ChangeVal)
+{
+
 }
 
 void ASCharacter::Helself(float Val)/* default = 100 */
@@ -252,8 +265,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("TeleAttack", IE_Released, this, &ASCharacter::EndAction_TeleAttack);
 
 
-	PlayerInputComponent->BindAction("GeleAttack",IE_Pressed,this, &ASCharacter::StartAction_GAttack);
-	PlayerInputComponent->BindAction("GeleAttack",IE_Released,this, &ASCharacter::EndAction_GAttack);
+	PlayerInputComponent->BindAction("GAttack",IE_Pressed,this, &ASCharacter::StartAction_GAttack);
+	PlayerInputComponent->BindAction("GAttack",IE_Released,this, &ASCharacter::EndAction_GAttack);
 
 	PlayerInputComponent->BindAction("Sprint",IE_Pressed,this,&ASCharacter::StartAction_Sprint);
 	PlayerInputComponent->BindAction("Sprint",IE_Released,this,&ASCharacter::EndAction_Sprint);

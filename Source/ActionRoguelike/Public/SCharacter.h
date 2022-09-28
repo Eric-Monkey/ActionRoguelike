@@ -78,7 +78,10 @@ protected:
 	virtual FVector GetPawnViewLocation() const override;
 
 	UFUNCTION()
-	void OnHealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float health, float ChangeVal);
+	void OnHealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float Health, float ChangeVal);
+
+	UFUNCTION()
+	void OnRageChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float Rage, float ChangeVal);
 
 	UFUNCTION(Exec)
 	void Helself(float Val=100);

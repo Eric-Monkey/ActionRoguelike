@@ -3,25 +3,31 @@
 
 #include "GAS/SAction.h"
 #include "GAS/SActionComponent.h"
+#include "Net/UnrealNetwork.h"
+
 
 
 USAction::USAction()
 {
 	isAutoStart = false;
+
+}
+
+void USAction::InitialOwerComp(USActionComponent* NewOwnerComp)
+{
+	OwerComp = NewOwnerComp;
 }
 
 USActionComponent* USAction::GetOwnerActionComp() const
 {
-	USActionComponent* ActionComp = Cast<USActionComponent>(GetOuter());
-	if (ensure(ActionComp)) {
-		return ActionComp;
-	}
-	return nullptr;
+	return OwerComp;
 }
 
-bool USAction::CanStart_Implementation()
+
+
+bool USAction::CanStart_Implementation(AActor* Starter)// Default Starter = nullptr
 {
-	if (IsRuning()) {
+	if (IsRunning()) {
 		return false;
 	}
 
@@ -36,26 +42,48 @@ void USAction::StartAction_Implementation(AActor* Starter)
 	/*UE_LOG(LogTemp, Warning, TEXT("StartAction:%s"), *ActionName.ToString());*/
 	USActionComponent* ActionComp = GetOwnerActionComp();
 	ActionComp->ActiveGameplayTags.AppendTags(GrantsTags);
-	bIsRuning = true;
+	RepData.bIsRunning = true;
+	RepData.Starter = Starter;
 }
 
 void USAction::EndAction_Implementation(AActor* Starter)
 {
 	USActionComponent* ActionComp = GetOwnerActionComp();
 	ActionComp->ActiveGameplayTags.RemoveTags(GrantsTags);
-	bIsRuning = false;
+	RepData.bIsRunning = false;
+	RepData.Starter = Starter;
 }
 
 UWorld* USAction::GetWorld() const
 {
-	USActionComponent* ActionComp = Cast<USActionComponent>(GetOuter());
-	if (ActionComp) {
-		return ActionComp->GetWorld();
+	AActor* Actor = Cast<AActor>(GetOuter());
+	if (Actor) {
+		return Actor->GetWorld();
 	}
 	return nullptr;
 }
 
-bool USAction::IsRuning()
+void USAction::OnRep_IsRunning()
 {
-	return bIsRuning;
+	if (RepData.bIsRunning) {
+
+		StartAction(RepData.Starter);
+	}
+	else
+	{
+		EndAction(RepData.Starter);
+	}
+
+}
+
+bool USAction::IsRunning()
+{
+	return RepData.bIsRunning;
+}
+
+void USAction::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(USAction, RepData);
+
 }
