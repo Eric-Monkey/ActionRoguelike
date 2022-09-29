@@ -16,7 +16,7 @@
 static TAutoConsoleVariable<bool> CvarTeammatesHurt(TEXT("su.TeammatesHurt"), true, TEXT("Enable TeammatesHurt"), ECVF_Cheat);
 
 ASMagicProjectile::ASMagicProjectile()
-{
+{	
 	ProjectileMoveComp->InitialSpeed = 2000.0f;
 	Damage = 20;
 }
@@ -51,6 +51,7 @@ void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedCompon
 			USBlueprintFunctionLibrary::ApplyDamageDirection(this->GetInstigator(), OtherActor, Damage ,SweepResult,this);
 			
 			//施加特殊效果
+			
 			if (ActionComp && ProjectileEffect) {
 				ActionComp->AddAction(GetInstigator(), ProjectileEffect);
 			}

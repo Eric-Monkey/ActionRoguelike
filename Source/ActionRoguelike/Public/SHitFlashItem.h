@@ -24,5 +24,5 @@ public:
 	USAttributeComponent* AttributeComp;
 
 	UFUNCTION()
-	void HealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float health, float ChangeVal);
+	void OnHealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float health, float ChangeVal);
 };

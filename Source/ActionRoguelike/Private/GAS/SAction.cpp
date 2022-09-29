@@ -42,6 +42,7 @@ void USAction::StartAction_Implementation(AActor* Starter)
 	/*UE_LOG(LogTemp, Warning, TEXT("StartAction:%s"), *ActionName.ToString());*/
 	USActionComponent* ActionComp = GetOwnerActionComp();
 	ActionComp->ActiveGameplayTags.AppendTags(GrantsTags);
+	
 	RepData.bIsRunning = true;
 	RepData.Starter = Starter;
 }
@@ -50,6 +51,7 @@ void USAction::EndAction_Implementation(AActor* Starter)
 {
 	USActionComponent* ActionComp = GetOwnerActionComp();
 	ActionComp->ActiveGameplayTags.RemoveTags(GrantsTags);
+	
 	RepData.bIsRunning = false;
 	RepData.Starter = Starter;
 }
@@ -86,4 +88,5 @@ void USAction::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLi
 
 	DOREPLIFETIME(USAction, RepData);
 
+	DOREPLIFETIME(USAction, OwerComp);
 }

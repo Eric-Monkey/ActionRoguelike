@@ -7,6 +7,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/AudioComponent.h"
+#include "GameFramework/Actor.h"
 
 // Sets default values
 ASBaseProjectile::ASBaseProjectile()
@@ -33,6 +34,8 @@ ASBaseProjectile::ASBaseProjectile()
 	AudioComp->SetupAttachment(SphereComp);
 
 	Multiply_Impulse = 1;
+
+	SetReplicates(true);
 }
 
 void ASBaseProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

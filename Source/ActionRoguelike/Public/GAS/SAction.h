@@ -18,6 +18,7 @@ struct FACtionRepData
 	GENERATED_BODY()
 
 public:
+
 	UPROPERTY()
 	bool bIsRunning;
 

@@ -16,10 +16,10 @@ ASHitFlashItem::ASHitFlashItem()
 
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 
-	AttributeComp->ApplyHealthChange.AddDynamic(this,&ASHitFlashItem::HealthChange);
+	AttributeComp->ApplyHealthChange.AddDynamic(this,&ASHitFlashItem::OnHealthChange);
 }
 
-void ASHitFlashItem::HealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float health, float ChangeVal)
+void ASHitFlashItem::OnHealthChange(AActor* Attacker, USAttributeComponent* AttributeComponent, float health, float ChangeVal)
 {
 	if (ChangeVal < 0) {
 

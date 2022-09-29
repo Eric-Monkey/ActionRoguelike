@@ -70,6 +70,12 @@ void USActionAttack::AttackDelay(ACharacter* Starter)
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.Instigator = Starter;//设置生成者
+
+	//客户端则不生成子弹,直接返回
+	if (!Starter->HasAuthority()) {
+		return;
+	}
+
 	if (IsHit) {
 
 		FVector HitPoint = HitResult.ImpactPoint;	//获取击中点

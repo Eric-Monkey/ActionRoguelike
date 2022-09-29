@@ -8,6 +8,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FApplyAttributeChange, AActor*,Attacker,USAttributeComponent*,AttributeComponent, float,health, float,ChangeVal);
 
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONROGUELIKE_API USAttributeComponent : public UActorComponent
 {
@@ -21,6 +22,7 @@ public:
 	static USAttributeComponent* GetAttribute(AActor* Actor);
 protected:
 
+
 	UPROPERTY(Replicated,EditDefaultsOnly,BlueprintReadOnly,Category="Attributes")
 	float Health;
 	UPROPERTY(Replicated,EditAnywhere, BlueprintReadOnly, Category = "Attributes")
@@ -33,7 +35,7 @@ protected:
 	float MaxRage;
 
 	UFUNCTION(NetMulticast,Reliable)
-	void NetMulticastApplyHealthChange(AActor* Attacker,float NewHealth , float ChangeVal);
+	void NetMulticastApplyHealthChange(AActor* Attacker,float NewHealth , float ChangeVal , bool IsFromServer=true);
 
 public:	
 	UPROPERTY(BlueprintAssignable)
@@ -70,3 +72,4 @@ public:
 	float GetMaxRage();
 
 };
+

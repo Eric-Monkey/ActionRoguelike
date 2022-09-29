@@ -50,10 +50,7 @@ void USActionEffect_Thorns::OnHealthChange(AActor* Attacker, USAttributeComponen
 		UE_LOG(LogTemp,Log,TEXT("ReflectAmount:%i"), ReflectAmount)
 
 		//获取攻击者，造成伤害
-		if (Ownering->HasAuthority()) {
 		USBlueprintFunctionLibrary::ApplyDamage(Ownering, Attacker,FMath::Abs(ReflectAmount));
-		}
-
 	}
 }
 

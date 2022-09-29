@@ -22,21 +22,25 @@ bool USAttributeComponent::ApplyChangeHealth (AActor* Attack,float Val)
 	if (Val< 0 && !GetOwner()->CanBeDamaged()) { return false; };
 
 	float OldHealth = Health;
-	Health = FMath::Clamp<float>(Health+Val,0,MaxHealth);
-	float ChangeVal = Health - OldHealth;
-	ApplyHealthChange.Broadcast(Attack, this, Health, ChangeVal);
-
-	if (ChangeVal !=0) {	//不判断死亡Actor会影响UI
-		NetMulticastApplyHealthChange(Attack, Health, ChangeVal);
-	}
+	float NewHealth = FMath::Clamp<float>(Health+Val,0,MaxHealth);
+	float ChangeVal = NewHealth - OldHealth;
+	/*ApplyHealthChange.Broadcast(Attack, this, Health, ChangeVal);*/
 	
-	//针对死亡Actor操作
-	if (Health == 0 && ChangeVal < 0) {
-		AMyGameModeBase* GM = GetWorld()->GetAuthGameMode<AMyGameModeBase>();
-		if (GM) {
-			GM->OnActorKiller(GetOwner(),Attack);
+	if (GetOwner()->HasAuthority()) {
+		Health = NewHealth;
+		if (ChangeVal !=0) {	//不判断Actor会影响UI
+			NetMulticastApplyHealthChange(Attack, Health, ChangeVal);
+		}
+
+		//针对死亡Actor操作
+		if (Health == 0 && ChangeVal < 0) {
+			AMyGameModeBase* GM = GetWorld()->GetAuthGameMode<AMyGameModeBase>();
+			if (GM) {
+				GM->OnActorKiller(GetOwner(), Attack);
+			}
 		}
 	}
+
 	return ChangeVal != 0;
 }
 
@@ -55,8 +59,9 @@ bool USAttributeComponent::ApplyChangeRage(AActor* Attack, float Val)
 
 }
 
-void USAttributeComponent::NetMulticastApplyHealthChange_Implementation(AActor* Attacker, float NewHealth, float ChangeVal)
+void USAttributeComponent::NetMulticastApplyHealthChange_Implementation(AActor* Attacker, float NewHealth, float ChangeVal ,bool isFromServer)
 {
+
 	ApplyHealthChange.Broadcast(Attacker,this,NewHealth,ChangeVal);
 }
 

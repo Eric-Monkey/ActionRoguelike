@@ -35,6 +35,11 @@ void USActionComponent::AddAction(AActor* Starter, TSubclassOf<USAction> NewActi
 	if ( !NewAction ) {
 		return;
 	}
+	//服务器才可以给buff
+	if (!Starter->HasAuthority()) {
+		UE_LOG(LogTemp,Warning,TEXT("Client Can not Add Action"))
+		return;
+	}
 
 	USAction * Action= NewObject<USAction>(GetOwner(),NewAction);
 
