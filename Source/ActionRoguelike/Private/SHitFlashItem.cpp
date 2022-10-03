@@ -24,7 +24,7 @@ void ASHitFlashItem::OnHealthChange(AActor* Attacker, USAttributeComponent* Attr
 	if (ChangeVal < 0) {
 
 		StaticMeshComp->SetScalarParameterValueOnMaterials("GameTime", GetWorld()->GetTimeSeconds());
-		UE_LOG(LogTemp,Warning,TEXT("Call____HealthChange"))
+		UE_LOG(LogTemp,Warning,TEXT("SHitFlashItem:Call____HealthChange"))
 	}
 }
 

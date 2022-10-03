@@ -19,7 +19,7 @@ ASChest::ASChest()
 
 	LidRotationForX = 110;
 	bChestOpen = false;
-	SetReplicates(true);
+	bReplicates = true;
 }
 
 
@@ -38,7 +38,7 @@ void ASChest::Interact_Implementation(APawn* CallPawn) {
 
 void ASChest::OnRep_ChestOpen()
 {
-	float CurrentPitch = bChestOpen ? LidRotationForX : 9;
+	float CurrentPitch = bChestOpen ? LidRotationForX : 0;
 	LipMesh->SetRelativeRotation(FRotator(CurrentPitch, 0, 0));
 }
 
@@ -47,6 +47,11 @@ void ASChest::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ASChest::OnActorLoad_Implementation()
+{
+	OnRep_ChestOpen();
 }
 
 // Called every frame

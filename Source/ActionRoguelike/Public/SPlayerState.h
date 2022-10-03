@@ -9,6 +9,9 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCreditsChanged, ASPlayerState*, PlayState, int32, NewCredits, int32, Delta);
 
+
+
+class USSaveGame;
 /**
 *
 */
@@ -29,8 +32,14 @@ public:
 	bool RemoveCredits(int32 Delta);
 
 	UFUNCTION(BlueprintCallable, Category = "Credits")
-	int32 GetCredits(int32 Delta) const;
+	int32 GetCredits() const;
 
 	UPROPERTY(BlueprintAssignable,Category = "Events")
 	FOnCreditsChanged OnCreditsChanged;
+
+	UFUNCTION()
+	void SetSaveGameData(USSaveGame* SaveGameObject);
+
+	UFUNCTION()
+	void GetSaveGameData(USSaveGame* SaveGameObject);
 };

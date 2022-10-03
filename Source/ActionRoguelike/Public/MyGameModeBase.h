@@ -11,6 +11,7 @@
  * 
  */
 class UEnvQuery;
+class USSaveGame;
 
 UCLASS()
 class ACTIONROGUELIKE_API AMyGameModeBase : public AGameModeBase
@@ -72,14 +73,32 @@ protected:
 	UFUNCTION()
 	void OnQueryPowerLocation(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 
-public:
-	UFUNCTION()
-	void OnActorKiller(AActor* killed, AActor* Instigat);
+	//保存文件插槽名字
+	UPROPERTY()
+	FString SaveSlotName;
+
+	UPROPERTY(BlueprintReadOnly,Category="SaveGame")
+	USSaveGame* CurrentSaveGame;
+
+
 
 public:
-
+	
 	AMyGameModeBase();
 
 	virtual void StartPlay() override;
+
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
+	void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
+
+	UFUNCTION()
+	void OnActorKiller(AActor* killed, AActor* Instigat);
 	
+	//-----保存游戏
+	UFUNCTION(BlueprintCallable,Category ="SaveGame" )
+	void WriteSaveGame();
+
+	UFUNCTION()
+	void LoadSaveGame();
 };

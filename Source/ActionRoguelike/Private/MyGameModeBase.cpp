@@ -8,6 +8,11 @@
 #include "AI/SAICharacter.h"
 #include "SCharacter.h"
 #include "SPlayerState.h"
+#include "Kismet/GameplayStatics.h"
+#include "SaveGame/SSaveGame.h"
+#include "GameFramework/GameStateBase.h"
+#include "SInterface.h"
+#include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 
 
 static TAutoConsoleVariable<bool> CvarSpawnBots(TEXT("su.spawnBots"),false ,TEXT("enable spawnBots"),ECVF_Cheat);
@@ -17,7 +22,10 @@ AMyGameModeBase::AMyGameModeBase()
 	KillCredits = 20;
 	DesiredPowerCount = 5;
 	DesiredPowerDistence = 1000;
+
+	SaveSlotName = "MySaveGame_01";
 }
+
 
 void AMyGameModeBase::StartPlay()
 {
@@ -35,6 +43,24 @@ void AMyGameModeBase::StartPlay()
 
 	}
 }
+
+void AMyGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+	//初始化SaveGame
+	LoadSaveGame();
+}
+
+void AMyGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
+{
+	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
+	ASPlayerState* Ps = NewPlayer->GetPlayerState<ASPlayerState>();
+	
+	if (Ps) {
+		Ps->GetSaveGameData(CurrentSaveGame);
+	}
+}
+
 
 void AMyGameModeBase::OnQueryPowerLocation(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus) {
 	//
@@ -172,3 +198,89 @@ void AMyGameModeBase::OnActorKiller(AActor* killed, AActor* Instigat)
 	}
 }
 
+
+
+void AMyGameModeBase::WriteSaveGame() {
+
+	for (int i = 0;i < GameState->PlayerArray.Num();i++) {
+
+		ASPlayerState* PS = Cast<ASPlayerState>(GameState->PlayerArray[i]);
+
+		PS->SetSaveGameData(CurrentSaveGame);
+		break; //单人模式所以直接跳出了
+	}
+	
+	//every Save to clear ActorDatas
+	CurrentSaveGame->ActorDatas.Empty();
+	
+	//Save Moving Actor
+	for (FActorIterator It(GetWorld());It ; ++It) {
+		AActor* Actor= *It;
+		if (Actor && Actor->Implements<USInterface>()) {
+			
+			FActorData ActorData;
+			ActorData.ActorName = Actor->GetName();
+			ActorData.ActorTransform = Actor->GetActorTransform();
+			
+
+			//Actor自身写入SaveGame的字节数组
+			FMemoryWriter MemWrite(ActorData.BinActorData);
+			FObjectAndNameAsStringProxyArchive Ar(MemWrite,true);
+			Ar.ArIsSaveGame = true;
+			Actor->Serialize(Ar);			
+			
+			CurrentSaveGame->ActorDatas.Add(ActorData);
+		}
+		
+	}
+	
+	UGameplayStatics::SaveGameToSlot(CurrentSaveGame,SaveSlotName,0);
+
+}
+
+void AMyGameModeBase::LoadSaveGame() {
+
+	if (UGameplayStatics::DoesSaveGameExist(SaveSlotName,0)) {
+
+		CurrentSaveGame = Cast<USSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0));
+		if (CurrentSaveGame==nullptr) {
+			UE_LOG(LogTemp, Warning, TEXT("Fail to load SaveGame Data"));
+			return;
+		}
+
+
+		for (FActorIterator It(GetWorld()); It; ++It) {
+			AActor* Actor = *It;
+			//只关注实现接口的Actor
+			if (!Actor && !Actor->Implements<USInterface>()) {
+				continue;
+			}
+			for ( FActorData ActorData :CurrentSaveGame->ActorDatas)
+			{
+				if (ActorData.ActorName == Actor->GetName()) {
+					//设置Actor的变换
+					Actor->SetActorRelativeTransform(ActorData.ActorTransform);
+
+					//设置Actor变量
+					FMemoryReader MemRead(ActorData.BinActorData);
+					FObjectAndNameAsStringProxyArchive Ar(MemRead,true);
+					Ar.ArIsSaveGame = true;
+					Actor->Serialize(Ar);
+
+					ISInterface::Execute_OnActorLoad(Actor);
+					break;
+				}
+
+			}
+
+		}
+
+		UE_LOG(LogTemp, Log, TEXT("Successed to load SaveGame Data"));
+	}
+	else
+	{
+		CurrentSaveGame = Cast<USSaveGame>( UGameplayStatics::CreateSaveGameObject(USSaveGame::StaticClass()) );
+		UE_LOG(LogTemp, Log, TEXT("Create SaveGame Data"));
+	}
+
+}

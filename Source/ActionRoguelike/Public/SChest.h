@@ -15,23 +15,20 @@ class ACTIONROGUELIKE_API ASChest : public AActor, public ISInterface
 {
 	GENERATED_BODY()
 
-	void Interact_Implementation(APawn* CallPawn);
+
 
 public:
+	ASChest();
+
 	UPROPERTY(EditAnywhere)
 	float LidRotationForX;
 
-
 	UPROPERTY(EditDefaultsOnly, Category = "Tags")
 	FGameplayTagContainer CardTags;
-	
-public:	
-	// Sets default values for this actor's properties
-	ASChest();
 
 protected:
 	//Í¬²½
-	UPROPERTY(ReplicatedUsing="OnRep_ChestOpen", BlueprintReadOnly)
+	UPROPERTY(ReplicatedUsing="OnRep_ChestOpen", BlueprintReadOnly , SaveGame)
 	bool bChestOpen;
 
 	UFUNCTION()
@@ -42,11 +39,14 @@ protected:
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	UStaticMeshComponent* LipMesh;
-	// Called when the game starts or when spawned
+
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
+public:		
+	virtual void Interact_Implementation(APawn* CallPawn) override;
+	
+	virtual void OnActorLoad_Implementation() override;
+
 	virtual void Tick(float DeltaTime) override;
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

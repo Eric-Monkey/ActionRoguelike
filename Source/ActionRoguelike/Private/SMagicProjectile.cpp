@@ -19,6 +19,7 @@ ASMagicProjectile::ASMagicProjectile()
 {	
 	ProjectileMoveComp->InitialSpeed = 2000.0f;
 	Damage = 20;
+
 }
 
 void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -52,11 +53,11 @@ void ASMagicProjectile::OnCompBeginOverlap(UPrimitiveComponent* OverlappedCompon
 			
 			//施加特殊效果
 			
-			if (ActionComp && ProjectileEffect) {
+			if (HasAuthority() && ActionComp && ProjectileEffect ) {
 				ActionComp->AddAction(GetInstigator(), ProjectileEffect);
 			}
 		}
-
+		
 		//声音，爆炸特效
 		Explode();
 	}

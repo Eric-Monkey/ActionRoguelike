@@ -35,7 +35,7 @@ ASBaseProjectile::ASBaseProjectile()
 
 	Multiply_Impulse = 1;
 
-	SetReplicates(true);
+	bReplicates = true;
 }
 
 void ASBaseProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
