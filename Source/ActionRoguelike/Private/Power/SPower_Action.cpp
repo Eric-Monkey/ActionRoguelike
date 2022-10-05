@@ -24,7 +24,9 @@ void ASPower_Action::Interact_Implementation(APawn* CallPawn)
 		}
 		//Server没有Action则添加
 		ActionComponent->AddAction(CallPawn , GrantActionClass);
-	}	
+	}
+
+	HidePower();
 }
 
 

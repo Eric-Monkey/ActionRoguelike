@@ -18,25 +18,33 @@ public:
 	// Sets default values for this actor's properties
 	ASPowerBase();
 
+	UFUNCTION()
+	void OnRep_IsActive();
+
 protected:
+
 	UPROPERTY()
 	FTimerHandle timeHandle_show;
 	
 	//设置物品可见有碰撞的时间
 	UPROPERTY(EditAnywhere,Category="PowerAttribute")
 	float respawnTime;
+
+	//可交互状态
+	UPROPERTY(ReplicatedUsing="OnRep_IsActive")
+	bool bIsActive;
 	
 	//球形碰撞组件
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* SphereComp;
-	// Called when the game starts or when spawned
+
 	virtual void BeginPlay() override;
 
 	void HidePower();
 
 	void ShowPower();
 
-	void SetState(bool state);
+	void SetState(bool NewState);
 
 
 public:	

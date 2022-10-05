@@ -3,6 +3,7 @@
 
 #include "Power/SPowerBase.h"
 #include "Components/SphereComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ASPowerBase::ASPowerBase()
@@ -14,7 +15,13 @@ ASPowerBase::ASPowerBase()
 
 	respawnTime = 10.0f;
 	//SphereComp = RootComponent;
-	SetReplicates(true);
+	bIsActive = true;
+	bReplicates = true ;
+}
+
+void ASPowerBase::OnRep_IsActive()
+{
+	SetState(bIsActive);
 }
 
 // Called when the game starts or when spawned
@@ -36,11 +43,11 @@ void ASPowerBase::ShowPower()
 	GetWorld()->GetTimerManager().ClearTimer(timeHandle_show);
 }
 
-void ASPowerBase::SetState(bool state)
+void ASPowerBase::SetState(bool NewState)
 {
-	SetActorEnableCollision(state);
-
-	RootComponent->SetVisibility(state, true);
+	bIsActive = NewState;
+	SetActorEnableCollision(NewState);
+	RootComponent->SetVisibility(NewState, true);
 }
 
 // Called every frame
@@ -53,5 +60,11 @@ void ASPowerBase::Tick(float DeltaTime)
 void ASPowerBase::Interact_Implementation(APawn* CallPawn)
 {
 
+}
+
+void ASPowerBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASPowerBase,bIsActive);
 }
 

@@ -30,6 +30,7 @@ AMyGameModeBase::AMyGameModeBase()
 void AMyGameModeBase::StartPlay()
 {
 	Super::StartPlay();
+	
 	UE_LOG(LogTemp,Log,TEXT("gamemod start"));
 	GetWorld()->GetTimerManager().SetTimer(TimeHandle_SpawnRandom ,this, &AMyGameModeBase::SpawnAI ,SpawnDelayTime,true);
 
@@ -53,12 +54,14 @@ void AMyGameModeBase::InitGame(const FString& MapName, const FString& Options, F
 
 void AMyGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
-	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
-	ASPlayerState* Ps = NewPlayer->GetPlayerState<ASPlayerState>();
 	
+	ASPlayerState* Ps = NewPlayer->GetPlayerState<ASPlayerState>();
+	//
 	if (Ps) {
 		Ps->GetSaveGameData(CurrentSaveGame);
 	}
+
+	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
 }
 
 
@@ -68,6 +71,12 @@ void AMyGameModeBase::OnQueryPowerLocation(UEnvQueryInstanceBlueprintWrapper* Qu
 		return;
 	}
 	TArray<FVector>  Locations = QueryInstance->GetResultsAsLocations();
+	if (! Locations.IsValidIndex(0)) {
+
+		UE_LOG(LogTemp, Warning, TEXT("OnQueryPowerLocation Fail: Please Cheak (NavMeshBoundsVolume Woark normal or EQS Running ok? )"))
+		return;
+	}
+	
 
 	TArray<FVector> UsedLoactions;
 	//当前道具数量<期望道具数量 就刷道具
@@ -75,6 +84,7 @@ void AMyGameModeBase::OnQueryPowerLocation(UEnvQueryInstanceBlueprintWrapper* Qu
 	while (CurPowerCount<DesiredPowerCount) {
 		//随意获取位置
 		int32 RandomLocationIndex = FMath::RandRange(0, Locations.Num() - 1);
+
 		FVector RandomLocation = Locations[RandomLocationIndex];
 
 		

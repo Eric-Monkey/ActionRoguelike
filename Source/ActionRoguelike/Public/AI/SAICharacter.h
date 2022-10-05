@@ -48,6 +48,13 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditDefaultsOnly,Category="UI")
+	TSubclassOf<UMyUserWidget>	SpottedWidgetClass;
+
+	UFUNCTION()
+	void AddSpotWidgetToView();
+
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -59,4 +66,8 @@ public:
 
 	UFUNCTION()
 	void OnTarPerceptionUpdate(AActor* Actor, FAIStimulus Stimulus);
+
+	UFUNCTION()
+	AActor* GetTargetActor(AAIController* AIPC);
+
 };

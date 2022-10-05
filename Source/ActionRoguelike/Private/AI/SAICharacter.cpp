@@ -88,6 +88,17 @@ void ASAICharacter::BeginPlay()
 	
 }
 
+void ASAICharacter::AddSpotWidgetToView()
+{
+	
+	UMyUserWidget* SpotWidget = CreateWidget<UMyUserWidget>(GetWorld(),SpottedWidgetClass);
+	if (SpotWidget) {
+		SpotWidget->AttachTo = this;
+
+		SpotWidget->AddToViewport(10);
+	}
+}
+
 // Called every frame
 void ASAICharacter::Tick(float DeltaTime)
 {
@@ -110,15 +121,29 @@ void ASAICharacter::PostInitializeComponents()
 	AttributeComp->ApplyHealthChange.AddDynamic(this, &ASAICharacter::OnHealthChange);
 }
 
+
 void ASAICharacter::OnTarPerceptionUpdate(AActor* Actor, FAIStimulus Stimulus)
 {	
 	if (Stimulus.IsActive()) {
 		AAIController* AIPc = Cast<AAIController>(GetController()); //获取ai控制器
+		if (!ensure(AIPc)) {
+			return;
+		};
+		//新目标弹出ui
+		if (GetTargetActor(AIPc)!= Actor) {
+			AddSpotWidgetToView();
+		}
+
 		if (Cast<ASCharacter>(Actor)) {
-			if (ensure(AIPc)) {
-				AIPc->GetBlackboardComponent()->SetValueAsObject("ToActor", Actor);//将值放入黑板
-			};
+
+			AIPc->GetBlackboardComponent()->SetValueAsObject("ToActor", Actor);//将值放入黑板
+
 		}
 	}		
+}
+
+AActor* ASAICharacter::GetTargetActor(AAIController* AIPC)
+{
+	return Cast<AActor>(AIPC->GetBlackboardComponent()->GetValueAsObject("ToActor"));
 }
 
