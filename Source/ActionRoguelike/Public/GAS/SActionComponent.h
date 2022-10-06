@@ -9,22 +9,22 @@
 #include "SActionComponent.generated.h"
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionStateChange,USActionComponent*, ActionComp, USAction*, Action);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONROGUELIKE_API USActionComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
-	USActionComponent();
+
 
 protected:
 	
-	UPROPERTY(Replicated)
-		TArray<USAction*> Actions;
+	UPROPERTY(Replicated,BlueprintReadOnly,Category="Actionia ")
+	TArray<USAction*> Actions;
 
 	UPROPERTY(EditAnywhere, Category = "Action")
-		TArray<TSubclassOf<USAction>> DefaultActions;
+	TArray<TSubclassOf<USAction>> DefaultActions;
 
 
 	UFUNCTION(Server,Reliable)
@@ -32,11 +32,19 @@ protected:
 	
 	UFUNCTION(Server,Reliable)
 	void ServerEndActionForName(AActor* Starter, FName ActionName);
+public:	
+	// Sets default values for this component's properties
+	USActionComponent();
 
-
-public:	//激活标签
+	//激活标签
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Tags")
 	FGameplayTagContainer ActiveGameplayTags;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnActionStateChange OnActionStart;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnActionStateChange OnActionEnd;
 
 	UFUNCTION(BlueprintCallable,Category="ActionEffect")
 	bool RemoveAction(USAction* RemoveAction);

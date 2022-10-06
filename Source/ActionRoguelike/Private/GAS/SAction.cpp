@@ -4,6 +4,7 @@
 #include "GAS/SAction.h"
 #include "GAS/SActionComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "MyGameModeBase.h"
 
 
 
@@ -41,17 +42,25 @@ void USAction::StartAction_Implementation(AActor* Starter)
 {	
 	/*UE_LOG(LogTemp, Warning, TEXT("StartAction:%s"), *ActionName.ToString());*/
 	USActionComponent* ActionComp = GetOwnerActionComp();
-	ActionComp->ActiveGameplayTags.AppendTags(GrantsTags);
 	
-	RepData.bIsRunning = true;
-	RepData.Starter = Starter;
+	ActionComp->ActiveGameplayTags.AppendTags(GrantsTags);	//赋予标签
+
+	RepData.bIsRunning = true;	
+	RepData.Starter = Starter;	//设置行动发起者
+
+	if (GetOwnerActionComp()->GetOwnerRole()==ROLE_Authority) {
+
+		BeginTime = GetWorld()->TimeSeconds; //设置开始时间
+	}
+	ActionComp->OnActionStart.Broadcast(ActionComp, this);
 }
 
 void USAction::EndAction_Implementation(AActor* Starter)
 {
 	USActionComponent* ActionComp = GetOwnerActionComp();
 	ActionComp->ActiveGameplayTags.RemoveTags(GrantsTags);
-	
+	ActionComp->OnActionEnd.Broadcast(ActionComp, this);
+
 	RepData.bIsRunning = false;
 	RepData.Starter = Starter;
 }
@@ -89,4 +98,5 @@ void USAction::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLi
 	DOREPLIFETIME(USAction, RepData);
 
 	DOREPLIFETIME(USAction, OwerComp);
+	DOREPLIFETIME(USAction, BeginTime);
 }

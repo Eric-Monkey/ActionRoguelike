@@ -3,12 +3,25 @@
 
 #include "GAS/SActionEffect.h"
 #include "GAS/SActionComponent.h"
+#include "GameFramework/GameStateBase.h"
 
 USActionEffect::USActionEffect()
 {
 	Duration = 3.0f;
 	Period = 1.0f;
 }
+
+float USActionEffect::GetRemainningTime()
+{
+	AGameStateBase* GS = GetWorld()->GetGameState<AGameStateBase>();
+	if (GS) {
+
+		float endTime = BeginTime + Duration;
+		return endTime - GS->GetServerWorldTimeSeconds();
+	}
+	return Duration;
+}
+
 void USActionEffect::StartAction_Implementation(AActor* Starter)
 {
 	Super::StartAction_Implementation(Starter);

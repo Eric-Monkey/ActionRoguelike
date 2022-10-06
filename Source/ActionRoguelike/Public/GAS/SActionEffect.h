@@ -6,6 +6,7 @@
 #include "GAS/SAction.h"
 #include "SActionEffect.generated.h"
 
+
 /**
  * 
  */
@@ -21,7 +22,12 @@ public:
 
 	virtual void EndAction_Implementation(AActor* Starter) override;
 
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	float GetRemainningTime();
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EffectUI")
+	UTexture2D* BuffIcon;
+
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Effect")
 	float Duration; //设置效果持续时间
 

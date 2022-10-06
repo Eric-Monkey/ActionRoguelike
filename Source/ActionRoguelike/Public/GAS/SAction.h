@@ -37,6 +37,9 @@ class ACTIONROGUELIKE_API USAction : public UObject
 
 protected:
 	UPROPERTY(Replicated)
+	float BeginTime;
+
+	UPROPERTY(Replicated)
 	USActionComponent* OwerComp;
 
 	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
