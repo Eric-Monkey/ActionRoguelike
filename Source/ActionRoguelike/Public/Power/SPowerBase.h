@@ -53,4 +53,5 @@ public:
 	
 	virtual void Interact_Implementation(APawn* CallPawn) override;
 
+	virtual FText GetInteractText_Implementation(APawn* CallPawn) override;
 };

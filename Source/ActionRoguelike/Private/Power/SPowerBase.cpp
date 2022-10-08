@@ -57,6 +57,13 @@ void ASPowerBase::Tick(float DeltaTime)
 
 }
 
+FText ASPowerBase::GetInteractText_Implementation(APawn* CallPawn)
+{
+	
+	return FText::GetEmpty();
+	
+}
+
 void ASPowerBase::Interact_Implementation(APawn* CallPawn)
 {
 

@@ -30,4 +30,7 @@ protected:
 	
 	UFUNCTION()
 	void Interact_Implementation(APawn* CallPawn);
+
+	UFUNCTION()
+	FText GetInteractText_Implementation(APawn* CallPawn) override;
 };

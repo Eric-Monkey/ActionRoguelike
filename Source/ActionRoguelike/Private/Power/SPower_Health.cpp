@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "SAttributeComponent.h"
 #include "SPlayerState.h"
+#include "Internationalization/Internationalization.h"
 
 ASPower_Health::ASPower_Health() {
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComp");
@@ -12,6 +13,15 @@ ASPower_Health::ASPower_Health() {
 	StaticMeshComp->SetupAttachment(RootComponent);
 	treatMax = 100;
 	CreditsCast = 50;
+}
+
+FText ASPower_Health::GetInteractText_Implementation(APawn* CallPawn)
+{
+	USAttributeComponent* AttributeComp = USAttributeComponent::GetAttribute(CallPawn);
+	if (AttributeComp && AttributeComp->IsFullHealth()) {
+		return NSLOCTEXT("InteractableActor","HealthPotion_FullHealthWarning","Already at full health now");
+	}
+	return FText::Format(NSLOCTEXT("InteractableActor", "HealthPotion_InteractMsg", "Cost {0} Credits. Restores health to maxhealth."),CreditsCast);
 }
 
 void ASPower_Health::Interact_Implementation(APawn* CallPawn)
