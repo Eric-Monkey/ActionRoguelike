@@ -13,6 +13,11 @@
 #include "GameFramework/GameStateBase.h"
 #include "SInterface.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
+#include "SMonsterData.h"
+#include "SAttributeComponent.h"
+#include "GAS/SActionComponent.h"
+#include "Engine/AssetManager.h"
+#include "Engine/StreamableManager.h"
 
 
 static TAutoConsoleVariable<bool> CvarSpawnBots(TEXT("su.spawnBots"),false ,TEXT("enable spawnBots"),ECVF_Cheat);
@@ -24,6 +29,14 @@ AMyGameModeBase::AMyGameModeBase()
 	DesiredPowerDistence = 1000;
 
 	SaveSlotName = "MySaveGame_01";
+}
+
+
+FMonsterInfo::FMonsterInfo()
+{
+	Weight = 1.f;
+	SpawnCost = 10.f;
+	KillReward = 5.f;
 }
 
 
@@ -170,9 +183,61 @@ void AMyGameModeBase::OnQueryFinishedEvent(UEnvQueryInstanceBlueprintWrapper* Qu
 		return;
 	}
 
-	if (Locations.IsValidIndex(0)) {
-		GetWorld()->SpawnActor<AActor>(SpawnAIClass,Locations[0],FRotator::ZeroRotator);
+	//读取 Monster 数据表格的所有数据行
+	TArray<FMonsterInfo*> MonsterInfos;
+	MonsterInfo->GetAllRows<FMonsterInfo>("", MonsterInfos);
+
+	//从 Monster 数据表随意读取一行数据
+	if (MonsterInfos.Num() == 0) {
+		UE_LOG(LogTemp, Warning, TEXT("please cheak the DataTable is null ? Read MonsterDataTable to Spawn AI fail"));
+		return;
 	}
+	int32 MonsterInfosRandomIndex = FMath::RandRange(0,MonsterInfos.Num()-1);
+	FMonsterInfo* SelectRowMonsterInfo =  MonsterInfos[MonsterInfosRandomIndex];
+
+	
+	// 查询位置 不合法
+	if (! Locations.IsValidIndex(0)) {
+		return;
+	}
+
+	//异步加载生成 Monster 的信息
+	UAssetManager* AssetManager = UAssetManager::GetIfValid();
+	if (AssetManager) {
+		TArray<FName> LoadBundles;
+		FStreamableDelegate StreamableDelegate = FStreamableDelegate::CreateUObject(this, &AMyGameModeBase::OnMosterDataAssetLoad ,SelectRowMonsterInfo->PrimaryAssetId , Locations[0]);
+		AssetManager->LoadPrimaryAsset(SelectRowMonsterInfo->PrimaryAssetId,LoadBundles,StreamableDelegate);
+	}
+
+}
+
+//加载完资源后生成AI
+void AMyGameModeBase::OnMosterDataAssetLoad(FPrimaryAssetId MonsterPrimaryAssetId, FVector SpawnLocation)
+{
+	
+	UAssetManager* AssetManager = UAssetManager::GetIfValid();
+	if (AssetManager) {
+		//数据已经读入AssetManager,从AssetManager读取需要的数据
+		USMonsterData* MonsterData = Cast<USMonsterData>(AssetManager->GetPrimaryAssetObject(MonsterPrimaryAssetId)); 
+		if (MonsterData) {
+			
+			//生成AI 
+			AActor* NewActor = GetWorld()->SpawnActor<AActor>(MonsterData->SpawnAIClass, SpawnLocation , FRotator::ZeroRotator);
+
+			//给新生成AI，初始化Action
+			if (NewActor) {
+				USActionComponent* ActionComp = Cast< USActionComponent >(NewActor->GetComponentByClass(USActionComponent::StaticClass()));
+
+				if (ActionComp) {
+					for (TSubclassOf<USAction> Action : MonsterData->Actions) {
+						ActionComp->AddAction(NewActor, Action);
+					}
+				}
+			}
+		}
+	}
+	
+
 }
 
 
