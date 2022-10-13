@@ -129,10 +129,26 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 void USActionComponent::BeginPlay()
 {
+	Super::BeginPlay();
+
 	if (GetOwner()->HasAuthority()) {
 		InitAction();
 	}	
 }
+
+void USActionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	//Remove All Action
+	TArray<USAction*> ActionsCopy = Actions;
+	for (USAction* Action :ActionsCopy)
+	{	
+		if (Action && Action->IsRunning())	Action->EndAction(GetOwner());
+	}
+		
+
+	Super::EndPlay(EEndPlayReason::RemovedFromWorld);
+}
+
 
 USAction* USActionComponent::GetAction(TSubclassOf<USAction> FindActionClass)
 {

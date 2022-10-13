@@ -44,6 +44,8 @@ protected:
 
 public:		
 	virtual void Interact_Implementation(APawn* CallPawn) override;
+
+	virtual FText GetInteractText_Implementation(APawn* CallPawn) override;
 	
 	virtual void OnActorLoad_Implementation() override;
 

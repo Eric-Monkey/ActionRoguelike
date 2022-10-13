@@ -66,6 +66,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 	UFUNCTION(Category = "Action")
 	USAction* GetAction( TSubclassOf<USAction> FindAction);
 

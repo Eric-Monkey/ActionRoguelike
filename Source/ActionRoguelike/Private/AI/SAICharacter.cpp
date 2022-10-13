@@ -14,7 +14,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GAS/SActionComponent.h"
 
-// Sets default values
+// Sets default value s
 
 ASAICharacter::ASAICharacter()
 {

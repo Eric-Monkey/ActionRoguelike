@@ -54,6 +54,14 @@ void ASChest::OnActorLoad_Implementation()
 	OnRep_ChestOpen();
 }
 
+FText ASChest::GetInteractText_Implementation(APawn* CallPawn)
+{
+	if (bChestOpen) {
+		return NSLOCTEXT("InteractableActor", "Chest_InteractMsg", "Close the Chest.");
+	}
+	return NSLOCTEXT("InteractableActor", "Chest_InteractMsg", "Open the Chest.");
+}
+
 // Called every frame
 void ASChest::Tick(float DeltaTime)
 {

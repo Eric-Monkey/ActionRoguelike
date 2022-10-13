@@ -29,4 +29,7 @@ public:
 
 	virtual void Interact_Implementation(APawn* CallPawn) override;
 
+	UFUNCTION()
+	FText GetInteractText_Implementation(APawn* CallPawn) override;
+
 };

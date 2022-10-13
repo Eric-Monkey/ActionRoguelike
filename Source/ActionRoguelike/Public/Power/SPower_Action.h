@@ -22,7 +22,12 @@ public:
 
 	virtual void Interact_Implementation(APawn* CallPawn) override;
 
+	virtual FText GetInteractText_Implementation(APawn* CallPawn) override;
+
 protected:
+	UPROPERTY(EditDefaultsOnly,Category="PowerAction")
+	FString GrantActionName;
+
 	UPROPERTY(VisibleAnywhere,Category="PowerAction")
 	UStaticMeshComponent* StaticMeshComp;
 

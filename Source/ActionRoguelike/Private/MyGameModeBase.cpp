@@ -18,9 +18,10 @@
 #include "GAS/SActionComponent.h"
 #include "Engine/AssetManager.h"
 #include "Engine/StreamableManager.h"
+#include "../ActionRoguelike.h"
 
 
-static TAutoConsoleVariable<bool> CvarSpawnBots(TEXT("su.spawnBots"),false ,TEXT("enable spawnBots"),ECVF_Cheat);
+static TAutoConsoleVariable<bool> CvarSpawnBots(TEXT("su.spawnBots"),true ,TEXT("enable spawnBots"),ECVF_Cheat);
 AMyGameModeBase::AMyGameModeBase()
 {
 	SpawnDelayTime = 2;
@@ -61,7 +62,12 @@ void AMyGameModeBase::StartPlay()
 void AMyGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
-	//初始化SaveGame
+	FString SelectSaveSlotName = UGameplayStatics::ParseOption(Options,"SaveGame");
+	
+	if (SelectSaveSlotName.Len()>0) {
+		SaveSlotName = SelectSaveSlotName;
+	}
+	//初始化游戏时加载SaveGame
 	LoadSaveGame();
 }
 
@@ -204,6 +210,8 @@ void AMyGameModeBase::OnQueryFinishedEvent(UEnvQueryInstanceBlueprintWrapper* Qu
 	//异步加载生成 Monster 的信息
 	UAssetManager* AssetManager = UAssetManager::GetIfValid();
 	if (AssetManager) {
+		LogOnScreen(this, "MonsterData Beginning Loading", FColor::Green);
+
 		TArray<FName> LoadBundles;
 		FStreamableDelegate StreamableDelegate = FStreamableDelegate::CreateUObject(this, &AMyGameModeBase::OnMosterDataAssetLoad ,SelectRowMonsterInfo->PrimaryAssetId , Locations[0]);
 		AssetManager->LoadPrimaryAsset(SelectRowMonsterInfo->PrimaryAssetId,LoadBundles,StreamableDelegate);
@@ -214,7 +222,7 @@ void AMyGameModeBase::OnQueryFinishedEvent(UEnvQueryInstanceBlueprintWrapper* Qu
 //加载完资源后生成AI
 void AMyGameModeBase::OnMosterDataAssetLoad(FPrimaryAssetId MonsterPrimaryAssetId, FVector SpawnLocation)
 {
-	
+	LogOnScreen(this, "MonsterData Finished Loading", FColor::Green);
 	UAssetManager* AssetManager = UAssetManager::GetIfValid();
 	if (AssetManager) {
 		//数据已经读入AssetManager,从AssetManager读取需要的数据
@@ -237,7 +245,6 @@ void AMyGameModeBase::OnMosterDataAssetLoad(FPrimaryAssetId MonsterPrimaryAssetI
 		}
 	}
 	
-
 }
 
 

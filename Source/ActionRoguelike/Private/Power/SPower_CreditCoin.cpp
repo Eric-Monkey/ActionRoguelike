@@ -13,6 +13,11 @@ ASPower_CreditCoin::ASPower_CreditCoin()
 	CoinCreits = 50;
 }
 
+FText ASPower_CreditCoin::GetInteractText_Implementation(APawn* CallPawn)
+{
+	return FText::Format(NSLOCTEXT("InteractableActor", "CreditCoinPotion_InteractMsg", "Grant {0} Credits."), CoinCreits);
+}
+
 void ASPower_CreditCoin::Interact_Implementation(APawn* CallPawn)
 {
 	if (!CallPawn) {

@@ -240,11 +240,11 @@ void ASCharacter::Tick(float DeltaTime)
 
 }
 
-void ASCharacter::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-	
-}
+//void ASCharacter::PossessedBy(AController* NewController)
+//{
+//	Super::PossessedBy(NewController);
+//	
+//}
 
 // Called to bind functionality to input
 void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
